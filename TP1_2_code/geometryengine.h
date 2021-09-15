@@ -55,6 +55,15 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 
+#include <QVector2D>
+#include <QVector3D>
+
+struct VertexData
+{
+    QVector3D position;
+    QVector2D texCoord;
+};
+
 class GeometryEngine : protected QOpenGLFunctions_3_1
 {
 public:
@@ -65,7 +74,8 @@ public:
 
 private:
     void initCubeGeometry();
-
+    void initPlanegeometry();
+    void subdivisePlan(int x, int y,  VertexData vertices[], GLushort indices[]);
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;
 

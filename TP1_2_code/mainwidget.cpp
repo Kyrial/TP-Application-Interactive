@@ -131,8 +131,10 @@ void MainWidget::initializeGL()
     // Enable depth buffer
     glEnable(GL_DEPTH_TEST);
 
+ //   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+ glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
     // Enable back face culling
-    glEnable(GL_CULL_FACE);
+  //  glEnable(GL_CULL_FACE);
 //! [2]
 
     geometries = new GeometryEngine;

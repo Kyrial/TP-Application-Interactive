@@ -54,7 +54,7 @@
 #include "geometryengine.h"
 
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions_3_1>
+#include <QOpenGLFunctions>
 #include <QMatrix4x4>
 #include <QQuaternion>
 #include <QVector2D>
