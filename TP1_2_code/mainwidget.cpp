@@ -131,7 +131,7 @@ void MainWidget::initializeGL()
     // Enable depth buffer
     glEnable(GL_DEPTH_TEST);
 
- //   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+  //  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
  glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
     // Enable back face culling
   //  glEnable(GL_CULL_FACE);
@@ -168,7 +168,8 @@ void MainWidget::initShaders()
 void MainWidget::initTextures()
 {
     // Load cube.png image
-    texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
+//    texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
+texture = new QOpenGLTexture(QImage(":/grass.png").mirrored());
 
     // Set nearest filtering mode for texture minification
     texture->setMinificationFilter(QOpenGLTexture::Nearest);

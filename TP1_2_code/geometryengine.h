@@ -75,7 +75,7 @@ public:
 private:
     void initCubeGeometry();
     void initPlanegeometry();
-    void subdivisePlan(int x, int y,  VertexData vertices[], GLushort indices[]);
+    void subdivisePlan(int x, int y,  VertexData vertices[], GLushort indices[],float Xmin,float Ymin,float Xmax,float Ymax);
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;
 

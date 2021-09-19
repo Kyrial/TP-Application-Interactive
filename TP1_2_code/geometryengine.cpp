@@ -159,33 +159,51 @@ void GeometryEngine::initCubeGeometry()
 //! [1]
 }
 
-void GeometryEngine::subdivisePlan(int x, int y, VertexData vertices[],GLushort indices[])
+void GeometryEngine::subdivisePlan(int x, int y, VertexData vertices[],GLushort indices[], float Xmin=-1,float Ymin=-1,float Xmax=1,float Ymax=1)
 {
-    int triangle = 2;
-    int decalageTriangle = 0;
+    float intervalX_Texture=2/(float)(x-1);
+    float intervalY_Texture=2/(float)(y-1);
 
-   float initX=-1.0;
-   float initY=-1.0;
-   float intervalX=2/(float)x;
-   float intervalY=2/(float)y;
+   float intervalX=(Xmax-Xmin)/(float)(x-1);
+   float intervalY=(Ymax-Ymin)/(float)(y-1);
    for(int i=0; i<x; i++){
         for(int j=0;j<y; j++){
-            qDebug("%f %f",initX+intervalX*i, initY+intervalY*j);
-            vertices[i*y+j]= {QVector3D(initX+intervalX*i, initY+intervalY*j,  0.0f), QVector2D(initX+intervalX*i, initY+intervalY*j)};
+            qDebug("%f %f",Xmin+intervalX*i, Ymin+intervalY*j);
+           // vertices[i*y+j]= {QVector3D(Xmin+intervalX*i, Ymin+intervalY*j, static_cast<float> (rand()) / static_cast<float> (RAND_MAX) ), QVector2D((intervalX_Texture*i)/2, (intervalY_Texture*j)/2)};
+            vertices[i*y+j]= {QVector3D(Xmin+intervalX*i, Ymin+intervalY*j,0.0f ), QVector2D((intervalX_Texture*i)/2, (intervalY_Texture*j)/2)};
 
-            if(triangle ==0){
-                indices[(i+1)*y+j] = i*y+j+decalageTriangle;
-                decalageTriangle++;
-            triangle = 2;
+       }
+   }
+   for(int i=0; i<x-1; i++){
+        for(int j=0;j<y; j++){
+                //qDebug("triangle %i, %i",i*y+j,(i+1)*y+j );
+            qDebug("indices %i, %i",2*i+i*(y*2)+j*2,2*i+i*(y*2)+j*2+1 );
+                indices[2*i+i*(y*2)+j*2] = i*y+j;
+                indices[2*i+i*(y*2)+j*2+1] = (i+1)*y+j;
+              //  indices[i*y+j*3+2] = i*y+j+1;
             }
-            else {
-                indices[i*y+j+i] = i*y+j+decalageTriangle;
-            }
-            //indices[i*y+j+i] = i*y+j;
+            //ajout triangle degenerer
+         //qDebug("triangle degenerer %i, %i",(i+1)*y+y-1,(i+1)*y );
+    //    if(i!=(x-2)){
+        qDebug("indices degenerer %i, %i",2*i+i*(y*2)+y*2,2*i+i*(y*2)+y*2+1 );
+            indices[2*i+i*(y*2)+y*2]=(i+1)*y+y-1;
+            indices[2*i+i*(y*2)+y*2+1]=(i+1)*y;
+    //    }
+     /*   if(i==(x-2))
+        {
+            qDebug("indices finale %i",2*i+i*(y*2)+y*2 );
+            //indices[2*i+i*(y*2)+y*2]= (i+1)*y+y-1+1;
+           // indices[2*i+i*(y*2)+y*2+1]=(i+1)*y+y-1;
+           // indices[2*i+i*(y*2)+y*2+2]=(i+1)*y+y-1;
+}*/
+
         }
-      //  indices[(i+1)*y+i] = (i+1)*y-1;
+        //indices[(i+1)*y+i] = (i+1)*y-1;
+   for(int i=0; i<(x*y+y*(x-2)+2*(x-2)+2); i++)
+       qDebug("ahah %i",indices[i]);
+
 }
-}
+
 
 
 
@@ -237,11 +255,13 @@ void GeometryEngine::initPlanegeometry()
 
 //    VertexData vertices[] = {};
 
-    unsigned int vertexNumber = 64 ;
-    VertexData vertices[64];
-     unsigned int indexCount = 64;
-    GLushort indices[8*8+8];
-    subdivisePlan(8,  8,  vertices,  indices);
+    int x=8;
+    int y=8;
+    unsigned int vertexNumber = x*y ;
+    VertexData vertices[x*y];
+     unsigned int indexCount = x*y+y*(x-2)+2*(x-2)+2;
+    GLushort indices[x*y+y*(x-2)+2*(x-2)+2];
+    subdivisePlan(x,  y,  vertices,  indices,-2,-2,2,2);
 
 
 
