@@ -93,6 +93,11 @@ private:
 
     QOpenGLTexture *texture;
 
+    QOpenGLTexture * textureGrass;
+    QOpenGLTexture * textureRock;
+    QOpenGLTexture * textureSnow;
+
+
     QMatrix4x4 projection;
 
     QVector2D mousePressPosition;

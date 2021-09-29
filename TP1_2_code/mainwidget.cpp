@@ -68,6 +68,12 @@ MainWidget::~MainWidget()
     // and the buffers.
     makeCurrent();
     delete texture;
+
+    delete textureGrass;
+    delete textureRock;
+    delete textureSnow;
+
+
     delete geometries;
     doneCurrent();
 }
@@ -169,7 +175,14 @@ void MainWidget::initTextures()
 {
     // Load cube.png image
 //    texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
-texture = new QOpenGLTexture(QImage(":/grass.png").mirrored());
+//texture = new QOpenGLTexture(QImage(":/grass.png").mirrored());
+    texture = new QOpenGLTexture(QImage(":/heightmap-1024x1024.png").mirrored());
+
+    textureGrass =new QOpenGLTexture(QImage(":/grass.png").mirrored());
+    textureRock =new QOpenGLTexture(QImage(":/grass.png").mirrored());
+    textureSnow =new QOpenGLTexture(QImage(":/snowrocks.png").mirrored());
+
+
 
     // Set nearest filtering mode for texture minification
     texture->setMinificationFilter(QOpenGLTexture::Nearest);
@@ -180,6 +193,20 @@ texture = new QOpenGLTexture(QImage(":/grass.png").mirrored());
     // Wrap texture coordinates by repeating
     // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
     texture->setWrapMode(QOpenGLTexture::Repeat);
+
+
+    textureGrass->setMinificationFilter(QOpenGLTexture::Nearest);
+    textureGrass->setMagnificationFilter(QOpenGLTexture::Linear);
+    textureGrass->setWrapMode(QOpenGLTexture::Repeat);
+
+    textureRock->setMinificationFilter(QOpenGLTexture::Nearest);
+    textureRock->setMagnificationFilter(QOpenGLTexture::Linear);
+    textureRock->setWrapMode(QOpenGLTexture::Repeat);
+
+    textureSnow->setMinificationFilter(QOpenGLTexture::Nearest);
+    textureSnow->setMagnificationFilter(QOpenGLTexture::Linear);
+    textureSnow->setWrapMode(QOpenGLTexture::Repeat);
+
 }
 //! [4]
 
@@ -205,8 +232,10 @@ void MainWidget::paintGL()
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    texture->bind();
-
+    texture->bind(0);
+    textureGrass->bind(1);
+    textureRock->bind(2);
+    textureSnow->bind(3);
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
@@ -219,7 +248,9 @@ void MainWidget::paintGL()
 
     // Use texture unit 0 which contains cube.png
     program.setUniformValue("texture", 0);
-
+    program.setUniformValue("textureGrass", 1);
+     program.setUniformValue("textureRock", 2);
+      program.setUniformValue("textureSnow", 3);
     // Draw cube geometry
     geometries->drawCubeGeometry(&program);
 }

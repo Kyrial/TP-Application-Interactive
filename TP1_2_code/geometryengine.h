@@ -75,7 +75,7 @@ public:
 private:
     void initCubeGeometry();
     void initPlanegeometry();
-    void subdivisePlan(int x, int y,  VertexData vertices[], GLushort indices[],float Xmin,float Ymin,float Xmax,float Ymax);
+    void subdivisePlan(int x, int y,  VertexData vertices[], GLushort indices[],float Xmin,float Ymin,float Xmax,float Ymax);//,std::string nameWeightMap );
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;
 
