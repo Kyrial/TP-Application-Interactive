@@ -51,7 +51,7 @@
 #include "mainwidget.h"
 
 #include <QMouseEvent>
-
+#include <iostream>
 #include <math.h>
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -131,8 +131,8 @@ void MainWidget::initializeGL()
     // Enable depth buffer
     glEnable(GL_DEPTH_TEST);
 
-  //  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
- glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
+   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+ //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
     // Enable back face culling
   //  glEnable(GL_CULL_FACE);
 //! [2]
@@ -223,3 +223,56 @@ void MainWidget::paintGL()
     // Draw cube geometry
     geometries->drawCubeGeometry(&program);
 }
+
+
+void MainWidget::keyPressEvent(QKeyEvent *event)
+{
+qDebug("touche appuyé ");
+    switch (event->key()) {
+        case Qt::Key_Z: /* haut */
+            projection.translate(0.0, 1.0, 0.0);
+            break;
+        case Qt::Key_Q: /* gauche */;
+            projection.translate(-1.0, 0.0, 0.0);
+            break;
+        case Qt::Key_D: /*droite */
+            projection.translate(1.0, 0.0, 0.0);
+          break;
+        case Qt::Key_S: /* bas */
+            projection.translate(0.0, -1.0, 0.0);
+            break;
+        case Qt::Key_A: /* descendre */
+            projection.translate(0.0, 0.0, 1.0);
+            break;
+        case Qt::Key_E: /* monter */
+            projection.translate(0.0, 0.0, -1.0);
+            break;
+
+
+    }
+
+    //projection.translate(0.0, 0.0, -1.0) ;
+      update();
+
+    // Save mouse press position
+  //  mousePressPosition = QVector2D(e->localPos());
+}
+
+
+/*
+void MainWidget::cameraControle(){
+glm::vec3 camera_position = glm::vec3(0.0f, 15.0f, 0.0f);
+glm::vec3 camera_target = glm::vec3(0.0f, -1.0f, 0.0f);
+glm::vec3 camera_up = glm::vec3(0.0f, 1.0f, -0.01f);
+
+       glm::mat4 view = glm::lookAt(camera_position, camera_position + camera_target, camera_up);
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+ //Camera zoom in and out
+    float cameraSpeed = 2.5 * deltaTime;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        //camera_position += cameraSpeed * camera_target;
+        camera_position += cameraSpeed * glm::vec3(0.0f, 0.0f, -1.0f);
+        }
+*/
+

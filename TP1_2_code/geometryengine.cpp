@@ -68,9 +68,8 @@ GeometryEngine::GeometryEngine()
     indexBuf.create();
 
     // Initializes cube geometry and transfers it to VBOs
-    initCubeGeometry();
+ //   initCubeGeometry();
     initPlanegeometry();
-
 }
 
 GeometryEngine::~GeometryEngine()
@@ -168,39 +167,37 @@ void GeometryEngine::subdivisePlan(int x, int y, VertexData vertices[],GLushort 
    float intervalY=(Ymax-Ymin)/(float)(y-1);
    for(int i=0; i<x; i++){
         for(int j=0;j<y; j++){
-            qDebug("%f %f",Xmin+intervalX*i, Ymin+intervalY*j);
-           // vertices[i*y+j]= {QVector3D(Xmin+intervalX*i, Ymin+intervalY*j, static_cast<float> (rand()) / static_cast<float> (RAND_MAX) ), QVector2D((intervalX_Texture*i)/2, (intervalY_Texture*j)/2)};
-            vertices[i*y+j]= {QVector3D(Xmin+intervalX*i, Ymin+intervalY*j,0.0f ), QVector2D((intervalX_Texture*i)/2, (intervalY_Texture*j)/2)};
+         //   qDebug("%f %f",Xmin+intervalX*i, Ymin+intervalY*j);
+            vertices[i*y+j]= {QVector3D(Xmin+intervalX*i, Ymin+intervalY*j, static_cast<float> (rand()) / static_cast<float> (RAND_MAX) ), QVector2D((intervalX_Texture*i)/2, (intervalY_Texture*j)/2)};
+          //  vertices[i*y+j]= {QVector3D(Xmin+intervalX*i, Ymin+intervalY*j,0.0f ), QVector2D((intervalX_Texture*i)/2, (intervalY_Texture*j)/2)};
 
        }
    }
+   int count =0;
    for(int i=0; i<x-1; i++){
         for(int j=0;j<y; j++){
-                //qDebug("triangle %i, %i",i*y+j,(i+1)*y+j );
-            qDebug("indices %i, %i",2*i+i*(y*2)+j*2,2*i+i*(y*2)+j*2+1 );
-                indices[2*i+i*(y*2)+j*2] = i*y+j;
-                indices[2*i+i*(y*2)+j*2+1] = (i+1)*y+j;
-              //  indices[i*y+j*3+2] = i*y+j+1;
+            //count+=2;
+      //      qDebug("indices %i, %i",2*i+i*(y*2)+j*2,2*i+i*(y*2)+j*2+1 );
+             //   indices[2*i+i*(y*2)+j*2] = i*y+j;
+            //    indices[2*i+i*(y*2)+j*2+1] = (i+1)*y+j;
+                indices[count++] = i*y+j;
+                indices[count++] = (i+1)*y+j;
             }
-            //ajout triangle degenerer
-         //qDebug("triangle degenerer %i, %i",(i+1)*y+y-1,(i+1)*y );
-    //    if(i!=(x-2)){
-        qDebug("indices degenerer %i, %i",2*i+i*(y*2)+y*2,2*i+i*(y*2)+y*2+1 );
-            indices[2*i+i*(y*2)+y*2]=(i+1)*y+y-1;
-            indices[2*i+i*(y*2)+y*2+1]=(i+1)*y;
-    //    }
-     /*   if(i==(x-2))
-        {
-            qDebug("indices finale %i",2*i+i*(y*2)+y*2 );
-            //indices[2*i+i*(y*2)+y*2]= (i+1)*y+y-1+1;
-           // indices[2*i+i*(y*2)+y*2+1]=(i+1)*y+y-1;
-           // indices[2*i+i*(y*2)+y*2+2]=(i+1)*y+y-1;
-}*/
-
-        }
+        if(i!=x-2){
+            //count +=2;
+     //   qDebug("indices degenerer %i, %i",2*i+i*(y*2)+y*2,2*i+i*(y*2)+y*2+1 );
+        //    indices[2*i+i*(y*2)+y*2]=(i+1)*y+y-1;
+        //    indices[2*i+i*(y*2)+y*2+1]=(i+1)*y;
+            indices[count++]=(i+1)*y+y-1;
+            indices[count++]=(i+1)*y;
+    }
+}
+   indices[count]=indices[count-1];
+   //qDebug("taille indice[] %i",count);
+   //indices[count]=20;
         //indices[(i+1)*y+i] = (i+1)*y-1;
-   for(int i=0; i<(x*y+y*(x-2)+2*(x-2)+2); i++)
-       qDebug("ahah %i",indices[i]);
+  // for(int i=0; i<count+1; i++)
+    //   qDebug("ahah %i",indices[i]);
 
 }
 
@@ -259,12 +256,12 @@ void GeometryEngine::initPlanegeometry()
     int y=8;
     unsigned int vertexNumber = x*y ;
     VertexData vertices[x*y];
-     unsigned int indexCount = x*y+y*(x-2)+2*(x-2)+2;
+    unsigned int indexCount = x*y+y*(x-2)+2*(x-2)+2;
     GLushort indices[x*y+y*(x-2)+2*(x-2)+2];
     subdivisePlan(x,  y,  vertices,  indices,-2,-2,2,2);
 
-
-
+    qDebug("taille index %i",indexCount);
+qDebug("taille index tab %i",x*y+y*(x-2)+2*(x-2)+2);
 
 
     // Indices for drawing cube faces using triangle strips.
@@ -292,7 +289,8 @@ void GeometryEngine::initPlanegeometry()
 
     // Transfer index data to VBO 1
     indexBuf.bind();
-    indexBuf.allocate(indices,  indexCount* sizeof(GLushort));
+    indexBuf.allocate(indices,  ((indexCount)* sizeof(GLushort)));
+    std::cout << indexBuf.size() << " index count " << indexCount <<"sizeof" <<  sizeof(GLushort) << std::endl;
 //! [1]
 }
 
@@ -321,6 +319,8 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
     // Draw cube geometry using indices from VBO 1
-    glDrawElements(GL_TRIANGLE_STRIP, indexBuf.size(), GL_UNSIGNED_SHORT, 0); //Careful update indicesNumber when creating new geometry
+   int size = (int)indexBuf.size();
+   std::cout << indexBuf.size() << " , meow " <<  size << std::endl;
+    glDrawElements(GL_TRIANGLE_STRIP, size/2, GL_UNSIGNED_SHORT, 0); //Careful update indicesNumber when creating new geometry
 }
 //! [2]
