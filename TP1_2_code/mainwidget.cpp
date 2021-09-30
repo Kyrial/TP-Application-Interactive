@@ -179,7 +179,7 @@ void MainWidget::initTextures()
     texture = new QOpenGLTexture(QImage(":/heightmap-1024x1024.png").mirrored());
 
     textureGrass =new QOpenGLTexture(QImage(":/grass.png").mirrored());
-    textureRock =new QOpenGLTexture(QImage(":/grass.png").mirrored());
+    textureRock =new QOpenGLTexture(QImage(":/rock.png").mirrored());
     textureSnow =new QOpenGLTexture(QImage(":/snowrocks.png").mirrored());
 
 

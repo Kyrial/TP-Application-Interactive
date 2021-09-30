@@ -15,11 +15,11 @@ void main()
 {
     // Calculate vertex position in screen space
     vec4 color = texture2D(texture, a_texcoord);
-    gl_Position = mvp_matrix * vec4(a_position.xy, color.x*2,1.);
+    gl_Position = mvp_matrix * vec4(a_position.xy, color.x*0.7,1.);
 
     // Pass texture coordinate to fragment shader
     // Value will be automatically interpolated to fragments inside polygon faces
     v_texcoord = a_texcoord;
-    v_position = vec3(a_position.xy, color.x*1.);
+    v_position = vec3(a_position.xy, color.x*1.2);
 }
 //! [0]
