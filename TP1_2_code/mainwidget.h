@@ -86,6 +86,8 @@ protected:
 
     void keyPressEvent(QKeyEvent *e) override;
 
+    void cameraControle();
+
 private:
     QBasicTimer timer;
     QOpenGLShaderProgram program;

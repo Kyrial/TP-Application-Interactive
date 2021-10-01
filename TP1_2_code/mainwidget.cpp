@@ -54,6 +54,9 @@
 #include <iostream>
 #include <math.h>
 
+
+
+
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
@@ -105,6 +108,13 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 }
 //! [0]
 
+
+QVector3D rotation_camera  = QVector3D(1.0f, 1.0f, 1.0f);
+QVector3D camera_position = QVector3D(0.0f, 1.0f, 1.0f);
+QVector3D camera_target = QVector3D(0.0f, -0.1f, -1.0f);
+QVector3D camera_up = QVector3D(0.0f, 0.0f, 0.5f);
+
+
 //! [1]
 void MainWidget::timerEvent(QTimerEvent *)
 {
@@ -121,6 +131,12 @@ void MainWidget::timerEvent(QTimerEvent *)
         // Request an update
         update();
     }
+    if(true){
+       camera_position = QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 1.0f, 2.0f), 0.2) * camera_position;
+        update();
+    }
+
+
 }
 //! [1]
 
@@ -217,7 +233,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    const qreal zNear = 3.0, zFar = 70.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -226,6 +242,9 @@ void MainWidget::resizeGL(int w, int h)
     projection.perspective(fov, aspect, zNear, zFar);
 }
 //! [5]
+
+
+
 
 void MainWidget::paintGL()
 {
@@ -242,8 +261,15 @@ void MainWidget::paintGL()
     matrix.translate(0.0, 0.0, -5.0);
     matrix.rotate(rotation);
 
+
+
+     QMatrix4x4 view;
+     view.lookAt(rotation*(camera_position), QVector3D(0, 0, 0), camera_up);
+
+
+
     // Set modelview-projection matrix
-    program.setUniformValue("mvp_matrix", projection * matrix);
+    program.setUniformValue("mvp_matrix", projection * matrix*view);
 //! [6]
 
     // Use texture unit 0 which contains cube.png
@@ -290,20 +316,17 @@ qDebug("touche appuyé ");
 }
 
 
-/*
-void MainWidget::cameraControle(){
-glm::vec3 camera_position = glm::vec3(0.0f, 15.0f, 0.0f);
-glm::vec3 camera_target = glm::vec3(0.0f, -1.0f, 0.0f);
-glm::vec3 camera_up = glm::vec3(0.0f, 1.0f, -0.01f);
 
-       glm::mat4 view = glm::lookAt(camera_position, camera_position + camera_target, camera_up);
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+void MainWidget::cameraControle(){
+
+       //QMatrix4x4 view = QMatrix4x4::lookAt(camera_position, camera_position + camera_target, camera_up);
+       // float deltaTime = currentFrame - lastFrame;
+     //   float lastFrame = currentFrame;
  //Camera zoom in and out
-    float cameraSpeed = 2.5 * deltaTime;
+ /*   float cameraSpeed = 2.5 * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         //camera_position += cameraSpeed * camera_target;
         camera_position += cameraSpeed * glm::vec3(0.0f, 0.0f, -1.0f);
-        }
-*/
+        */}
+
 
