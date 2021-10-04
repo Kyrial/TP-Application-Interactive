@@ -55,7 +55,7 @@
 #include <math.h>
 
 
-
+bool Tourne = true;
 
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
@@ -64,6 +64,7 @@ MainWidget::MainWidget(QWidget *parent) :
     angularSpeed(0)
 {
 }
+
 
 MainWidget::~MainWidget()
 {
@@ -109,6 +110,7 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 //! [0]
 
 
+
 QVector3D rotation_camera  = QVector3D(1.0f, 1.0f, 1.0f);
 QVector3D camera_position = QVector3D(0.0f, 1.0f, 1.0f);
 QVector3D camera_target = QVector3D(0.0f, -0.1f, -1.0f);
@@ -131,7 +133,7 @@ void MainWidget::timerEvent(QTimerEvent *)
         // Request an update
         update();
     }
-    if(true){
+    if(Tourne){
        camera_position = QQuaternion::fromAxisAndAngle(QVector3D(0.0f, 0.0f, 2.0f), 0.2) * camera_position;
         update();
     }
@@ -305,7 +307,10 @@ qDebug("touche appuyé ");
         case Qt::Key_E: /* monter */
             projection.translate(0.0, 0.0, -1.0);
             break;
+        case Qt::Key_C: /*  tourne terrain */
 
+            Tourne = Tourne == true ? false: true;
+        break;
 
     }
 
