@@ -132,7 +132,7 @@ void MainWidget::timerEvent(QTimerEvent *)
         update();
     }
     if(true){
-       camera_position = QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 1.0f, 2.0f), 0.2) * camera_position;
+       camera_position = QQuaternion::fromAxisAndAngle(QVector3D(0.0f, 0.0f, 2.0f), 0.2) * camera_position;
         update();
     }
 
@@ -264,12 +264,13 @@ void MainWidget::paintGL()
 
 
      QMatrix4x4 view;
-     view.lookAt(rotation*(camera_position), QVector3D(0, 0, 0), camera_up);
+     view.lookAt((camera_position), QVector3D(0, 0, 0), camera_up);
 
 
 
     // Set modelview-projection matrix
-    program.setUniformValue("mvp_matrix", projection * matrix*view);
+    program.setUniformValue("mvp_matrix",  projection *  matrix * view);
+    // program.setUniformValue("mvp_matrix",  matrix * view * projection);
 //! [6]
 
     // Use texture unit 0 which contains cube.png
