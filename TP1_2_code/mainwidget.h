@@ -71,7 +71,11 @@ class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_1
 public:
     explicit MainWidget(QWidget *parent = 0);
     ~MainWidget();
+    MainWidget();
 
+    MainWidget(int fps);
+
+void modifFPS(int x);
 protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;

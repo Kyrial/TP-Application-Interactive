@@ -60,6 +60,15 @@ QElapsedTimer lastFrame;
 double deltaTime = 1;
 bool Tourne = true;
 
+MainWidget::MainWidget(){}
+
+MainWidget::MainWidget(int fps){
+    FPS = fps;
+}
+void MainWidget::modifFPS(int x){
+    FPS = x;
+}
+
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
@@ -201,7 +210,8 @@ void MainWidget::initTextures()
 //    texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
 //texture = new QOpenGLTexture(QImage(":/grass.png").mirrored());
     texture = new QOpenGLTexture(QImage(":/heightmap-1024x1024.png").mirrored());
-
+   // texture = new QOpenGLTexture(QImage(":/Heightmap_Mountain.png").mirrored());
+//texture = new QOpenGLTexture(QImage(":/Heightmap_Rocky.png").mirrored());
     textureGrass =new QOpenGLTexture(QImage(":/grass.png").mirrored());
     textureRock =new QOpenGLTexture(QImage(":/rock.png").mirrored());
     textureSnow =new QOpenGLTexture(QImage(":/snowrocks.png").mirrored());
