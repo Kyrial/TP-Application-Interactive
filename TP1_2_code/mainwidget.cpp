@@ -53,8 +53,11 @@
 #include <QMouseEvent>
 #include <iostream>
 #include <math.h>
+#include <QElapsedTimer>
 
-
+int FPS = 20;
+QElapsedTimer lastFrame;
+double deltaTime = 1;
 bool Tourne = true;
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -133,9 +136,12 @@ void MainWidget::timerEvent(QTimerEvent *)
         // Request an update
         update();
     }
+
     if(Tourne){
-       camera_position = QQuaternion::fromAxisAndAngle(QVector3D(0.0f, 0.0f, 2.0f), 0.2) * camera_position;
+       deltaTime = lastFrame.elapsed();
+        camera_position = QQuaternion::fromAxisAndAngle(QVector3D(0.0f, 0.0f, 2.0f), 0.03*(deltaTime)) * camera_position;
         update();
+        lastFrame.start();
     }
 
 
@@ -164,7 +170,7 @@ void MainWidget::initializeGL()
     geometries = new GeometryEngine;
 
     // Use QBasicTimer because its faster than QTimer
-    timer.start(12, this);
+    timer.start(FPS, this);
 }
 
 //! [3]
@@ -235,7 +241,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 70.0, fov = 45.0;
+    const qreal zNear = 2.0, zFar = 70.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -308,9 +314,12 @@ qDebug("touche appuyé ");
             projection.translate(0.0, 0.0, -1.0);
             break;
         case Qt::Key_C: /*  tourne terrain */
+{
 
+            lastFrame.start();
             Tourne = Tourne == true ? false: true;
         break;
+    }
 
     }
 
@@ -326,7 +335,8 @@ qDebug("touche appuyé ");
 void MainWidget::cameraControle(){
 
        //QMatrix4x4 view = QMatrix4x4::lookAt(camera_position, camera_position + camera_target, camera_up);
-       // float deltaTime = currentFrame - lastFrame;
+       //float currentFrame = glfwGetTime();
+    // float deltaTime = currentFrame - lastFrame;
      //   float lastFrame = currentFrame;
  //Camera zoom in and out
  /*   float cameraSpeed = 2.5 * deltaTime;
