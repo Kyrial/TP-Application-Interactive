@@ -58,6 +58,7 @@
 #include <QVector2D>
 #include <QVector3D>
 
+#include "BasicIO.h"
 struct VertexData
 {
     QVector3D position;
@@ -68,16 +69,39 @@ class GeometryEngine : protected QOpenGLFunctions_3_1
 {
 public:
     GeometryEngine();
+    GeometryEngine(std::string filename){
+    /*   std::vector<VertexData>  vertice;
+       OFFIO::open( filename, vertice);
+
+
+       // Transfer vertex data to VBO 0
+       arrayBuf.bind();
+       arrayBuf.allocate(vertice, vertice.size()+sizeof(QVector3D));
+
+       // Transfer index data to VBO 1
+      // indexBuf.bind();
+      // indexBuf.allocate(indices,  ((indexCount)* sizeof(GLushort)));*/
+    }
+
+    int test(QOpenGLShaderProgram *program){
+                qDebug("test %i", 55);
+            //std::cout << indexBuf << " , meow " <<   std::endl;
+            return 5;
+    }
+
     virtual ~GeometryEngine();
 
-    void drawCubeGeometry(QOpenGLShaderProgram *program);
 
-private:
-    void initCubeGeometry();
-    void initPlanegeometry();
-    void subdivisePlan(int x, int y,  VertexData vertices[], GLushort indices[],float Xmin,float Ymin,float Xmax,float Ymax);//,std::string nameWeightMap );
+    void drawCubeGeometry(QOpenGLShaderProgram *program);
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;
+
+    void initCubeGeometry();
+    void initPlanegeometry();
+private:
+
+    //void initPlanegeometry();
+    void subdivisePlan(int x, int y,  VertexData vertices[], GLushort indices[],float Xmin,float Ymin,float Xmax,float Ymax);//,std::string nameWeightMap );
 
 };
 

@@ -56,6 +56,11 @@
 #include "mainwidget.h"
 #endif
 
+
+
+
+
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -67,12 +72,14 @@ int main(int argc, char *argv[])
     app.setApplicationName("TP1 et 2");
     app.setApplicationVersion("0.1");
 #ifndef QT_NO_OPENGL
-    MainWidget widget(500);
+    //MainWidget widget(500);
 
-    widget.show();
+    //widget.show();
     MainWidget widget2(20);
 
     widget2.show();
+
+
 
 #else
     QLabel note("OpenGL Support required");

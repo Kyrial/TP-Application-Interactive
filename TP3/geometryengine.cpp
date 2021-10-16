@@ -69,7 +69,8 @@ GeometryEngine::GeometryEngine()
 
     // Initializes cube geometry and transfers it to VBOs
  //   initCubeGeometry();
-    initPlanegeometry();
+
+//    initPlanegeometry();
 }
 
 GeometryEngine::~GeometryEngine()
@@ -125,11 +126,6 @@ void GeometryEngine::initCubeGeometry()
     };
 
 
-
-
-
-
-
     // Indices for drawing cube faces using triangle strips.
     // Triangle strips can be connected by duplicating indices
     // between the strips. If connecting strips have opposite
@@ -155,6 +151,7 @@ void GeometryEngine::initCubeGeometry()
     // Transfer index data to VBO 1
     indexBuf.bind();
     indexBuf.allocate(indices,  indexCount* sizeof(GLushort));
+    std::cout << indexBuf.size() << " index count " << indexCount <<"sizeof" <<  sizeof(GLushort) << std::endl;
 //! [1]
 }
 
@@ -194,16 +191,7 @@ void GeometryEngine::subdivisePlan(int x, int y, VertexData vertices[],GLushort 
     }
 }
    indices[count]=indices[count-1];
-   //qDebug("taille indice[] %i",count);
-   //indices[count]=20;texcoordLocation
-        //indices[(i+1)*y+i] = (i+1)*y-1;
-  // for(int i=0; i<count+1; i++)
-    //   qDebug("ahah %i",indices[i]);
-
 }
-
-
-
 
 void GeometryEngine::initPlanegeometry()
 {
@@ -241,6 +229,7 @@ void GeometryEngine::initPlanegeometry()
 //! [2]
 void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
 {
+    std::cout << indexBuf.size() << " , meow " <<   std::endl;
     // Tell OpenGL which VBOs to use
     arrayBuf.bind();
     indexBuf.bind();
@@ -263,7 +252,7 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
 
     // Draw cube geometry using indices from VBO 1
    int size = (int)indexBuf.size();
-  // std::cout << indexBuf.size() << " , meow " <<  size << std::endl;
+   std::cout << indexBuf.size() << " , meow " <<  size << std::endl;
     glDrawElements(GL_TRIANGLE_STRIP, size/2, GL_UNSIGNED_SHORT, 0); //Careful update indicesNumber when creating new geometry
 }
 //! [2]

@@ -2,18 +2,33 @@
 #define TRANSFORM_H
 
 #include <QMatrix3x3>
+#include <QMatrix4x4>
 #include <QVector3D>
 #include <QVector4D>
 #include <QQuaternion>
 class Transform
 {
 public:
-    Transform(){}
-    Transform(float sc, QQuaternion ro, QVector3D tr){
+    Transform(){
+        s=QVector3D();
+        r= QQuaternion();
+        t = QVector3D();
+    }
+    Transform(QVector3D sc, QQuaternion ro, QVector3D tr){
         s = sc;
         r = ro;
         t = tr;
     };
+
+    /*QMatrix4x4 getMatrix(){
+
+        return s*r*t;
+
+
+    }*/
+
+
+
 
 private:
    //QMatrix3x3 m; // rotation + skew + scale
@@ -22,7 +37,7 @@ private:
 
 
 
-   float s; //uniform scale
+   QVector3D s; //uniform scale
    QQuaternion r; // rotation
    QVector3D t; // translation
 
@@ -38,7 +53,7 @@ protected:
 
     Transform combine_with( Transform & t);
     Transform inverse();
-    Transform interpolate_with( Transform &t, float k);
+    Transform interpolate_with( Transform &t, QVector3D k);
 
     Transform mix_with(Transform b, float k){
        Transform result;
@@ -58,12 +73,13 @@ protected:
         r = QQuaternion::fromAxisAndAngle(v,f);
     }
 
-    void setScale( float v){
+    void setScale( QVector3D v){
         s = v;
     }
     void setTranslate( QVector3D v){
         t = v;
     }
+
 
 
 };

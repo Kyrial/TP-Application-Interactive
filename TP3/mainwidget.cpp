@@ -58,7 +58,7 @@
 int FPS = 20;
 QElapsedTimer lastFrame;
 double deltaTime = 1;
-bool Tourne = true;
+bool Tourne = false;
 
 MainWidget::MainWidget(){}
 
@@ -73,9 +73,20 @@ MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
     texture(0),
-    angularSpeed(0)
+    angularSpeed(0),
+    gameObj(0)
 {
 }
+
+
+void MainWidget::scene(){
+    Transform tt = Transform();
+   // meshObject mechObj = meshObject();
+    gameObj = new GameObject();// tt, geo);
+}
+
+
+
 
 
 MainWidget::~MainWidget()
@@ -88,7 +99,7 @@ MainWidget::~MainWidget()
     delete textureGrass;
     delete textureRock;
     delete textureSnow;
-
+    delete gameObj;
 
     delete geometries;
     doneCurrent();
@@ -176,7 +187,21 @@ void MainWidget::initializeGL()
   //  glEnable(GL_CULL_FACE);
 //! [2]
 
-    geometries = new GeometryEngine;
+
+
+
+
+      geometries = new GeometryEngine;
+      scene();
+      gameObj->geo->initPlanegeometry();
+
+      GameObject gameObj2 = GameObject();
+      std::cout<<"INIT SCENE"<<std::endl;
+      gameObj2.geo->initCubeGeometry();
+      gameObj->addChild(&gameObj2);
+
+
+
 
     // Use QBasicTimer because its faster than QTimer
     timer.start(FPS, this);
@@ -251,7 +276,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 2.0, zFar = 70.0, fov = 45.0;
+    const qreal zNear = 1.2, zFar = 70.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -297,9 +322,20 @@ void MainWidget::paintGL()
      program.setUniformValue("textureRock", 2);
       program.setUniformValue("textureSnow", 3);
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
-}
+     // geometries->drawCubeGeometry(&program);
 
+      //##############
+      // gameObj->chargeMatriceForShader(&program);
+
+   // gameObj->geo.drawCubeGeometry(&program);
+
+
+
+
+    gameObj->updateScene(&program);
+
+       //geometries->drawCubeGeometry(&program);
+}
 
 void MainWidget::keyPressEvent(QKeyEvent *event)
 {

@@ -52,7 +52,8 @@
 #define MAINWIDGET_H
 
 #include "geometryengine.h"
-
+#include "gameobject.h"
+//#include "meshobject.h"
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QMatrix4x4>
@@ -91,11 +92,13 @@ protected:
     void keyPressEvent(QKeyEvent *e) override;
 
     void cameraControle();
+    void scene();
 
 private:
     QBasicTimer timer;
     QOpenGLShaderProgram program;
     GeometryEngine *geometries;
+    GameObject *gameObj;
 
     QOpenGLTexture *texture;
 

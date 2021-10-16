@@ -46,6 +46,30 @@
 
 namespace OFFIO{
 
+template<class point_t> point_t max( point_t BB , point_t pt ){
+
+
+    return BB.x() < pt.x() ?
+                pt : pt.x() < BB.x() ?
+                    BB : BB.y() < pt.y() ?
+                        pt : pt.y() < BB.y() ?
+                            BB : BB.z() < pt.z() ?
+                                pt : pt.z() < BB.z() ?
+                                    BB : pt;
+}
+template<class point_t> point_t min( point_t BB , point_t pt ){
+
+
+    return BB.x() > pt.x() ?
+                pt : pt.x() > BB.x() ?
+                    BB : BB.y() > pt.y() ?
+                        pt : pt.y() > BB.y() ?
+                            BB : BB.z() > pt.z() ?
+                                pt : pt.z() > BB.z() ?
+                                    BB : pt;
+}
+
+
 template< class point_t , class type_t > bool open( const std::string & filename ,
                                                     std::vector< point_t > & vertices ,
                                                     std::vector< std::vector< type_t > > & faces,
@@ -231,11 +255,15 @@ template< class point_t > bool open( const std::string & filename , std::vector<
 
     for( int v = 0 ; v < n_vertices ; ++v )
     {
-        typename point_t::type_t x , y , z;
+        //typename point_t::type_t x , y , z;
+        float x , y , z;
         myfile >> x >> y >> z;
         vertices[v] = point_t( x , y , z );
-        bb = point_t::min( bb , point_t( x , y , z ) );
-        BB = point_t::max( BB , point_t( x , y , z ) );
+
+        BB = max( BB , point_t( x , y , z ) );
+        bb = min( bb , point_t( x , y , z ) );
+     //   bb = point_t::min( bb , point_t( x , y , z ) );
+    //    BB = point_t::max( BB , point_t( x , y , z ) );
     }
 
     myfile.close();
