@@ -195,10 +195,10 @@ void MainWidget::initializeGL()
       scene();
       gameObj->geo->initPlanegeometry();
 
-      GameObject gameObj2 = GameObject();
+      GameObject *gameObj2 = new GameObject();
       std::cout<<"INIT SCENE"<<std::endl;
-      gameObj2.geo->initCubeGeometry();
-      gameObj->addChild(&gameObj2);
+      gameObj2->geo->initCubeGeometry();
+      gameObj->addChild(gameObj2);
 
 
 

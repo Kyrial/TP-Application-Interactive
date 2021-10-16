@@ -54,13 +54,11 @@ public:
        foreach (GameObject* go, enfants) {
          qDebug("foreach %i",enfants.size());
         //std::cout<<go->a()<<std::endl;
-        go->chargeMatriceForShader(program);
+
         qDebug("dessine1 %p %p", program, go->geo);
-        go->geo->test(program);
-        go->geo->initCubeGeometry();
-//        go->geo->drawCubeGeometry(program);
+          //   go->geo->drawCubeGeometry(program);
         qDebug("dessine2 ");
-        //go->updateScene(program);
+        go->updateScene(program);
 
         }
      }
