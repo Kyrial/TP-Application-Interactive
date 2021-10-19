@@ -34,27 +34,28 @@ public:
     }
 
 
-    void  updateScene(QOpenGLShaderProgram * program){
-        QMatrix4x4 m= chargeMatriceForShader(program);
+    void  updateScene(QOpenGLShaderProgram * program, double deltaTime){
+        QMatrix4x4 m= chargeMatriceForShader(program, deltaTime);
         geo->drawCubeGeometry(program);
         qDebug("boucle ");
             foreach (GameObject* go, enfants) {
             qDebug("foreach %i \n",enfants.size());
-            go->updateScene(program,m);
+            go->updateScene(program,deltaTime, m);
         }
      }
-    void  updateScene(QOpenGLShaderProgram * program, QMatrix4x4 lastM){
-        QMatrix4x4 m= chargeMatriceForShader(program,lastM);
+    void  updateScene(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 lastM){
+        QMatrix4x4 m= chargeMatriceForShader(program, deltaTime,lastM);
         geo->drawCubeGeometry(program);
         qDebug("boucle ");
             foreach (GameObject* go, enfants) {
             qDebug("foreach %i \n",enfants.size());
-            go->updateScene(program, m);
+            go->updateScene(program,deltaTime, m);
+
         }
      }
 
 
-    int a(){return 5;}
+  //  int a(){return 5;}
 
    void updateMesh(GeometryEngine *ge){
         geo = ge;
@@ -69,18 +70,20 @@ private:
     Transform t = Transform();
     QVector< GameObject*> enfants= QVector<GameObject*>();
     GameObject *parent;
+    Transform animation = Transform();
    // meshObject obj;
 
 
 
 public:
 
-   QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program){
-    QMatrix4x4 a = t.doTransformation();
+   QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime){
+
+QMatrix4x4 a = t.doTransformation();
     program->setUniformValue("transform_Matrix", a);
     return a;
    }
-   QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, QMatrix4x4 m){
+   QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 m){
     QMatrix4x4 a = t.doTransformation();
 
     program->setUniformValue("transform_Matrix", m*a);
@@ -92,12 +95,15 @@ public:
        qDebug("miaou %i",enfants.size());
        //enfants.push_back(enfant);
        enfants.append(enfant);
-       //TODO
-       //Set parent
+       enfant->SetParent(this);
 
    }
 
 // virtual ~GameObject();
+
+   void SetParent(GameObject * pa){
+       parent = pa;
+   }
 
 
 };
