@@ -21,20 +21,11 @@ public:
         t = tt;
         parent = &par;
     }
-  /*  GameObject(Transform tt, GameObject par, meshObject geo)
+    GameObject(Transform tt)
     {
         t = tt;
-        parent = &par;
-        obj = geo;
-    }*/
-/*
-    GameObject(Transform tt, meshObject geo)
-    {
-        t = tt;
-        parent = nullptr;
-        obj = geo;
     }
-*/
+
     GameObject(Transform tt, GameObject par, QVector<GameObject*> enf)
     {
         t = tt;
@@ -44,29 +35,30 @@ public:
 
 
     void  updateScene(QOpenGLShaderProgram * program){
-        qDebug("update %i",enfants.size());
-        chargeMatriceForShader(program);
-        qDebug("dessine ");
+        QMatrix4x4 m= chargeMatriceForShader(program);
         geo->drawCubeGeometry(program);
         qDebug("boucle ");
-
-
-       foreach (GameObject* go, enfants) {
-         qDebug("foreach %i",enfants.size());
-        //std::cout<<go->a()<<std::endl;
-
-        qDebug("dessine1 %p %p", program, go->geo);
-          //   go->geo->drawCubeGeometry(program);
-        qDebug("dessine2 ");
-        go->updateScene(program);
-
+            foreach (GameObject* go, enfants) {
+            qDebug("foreach %i \n",enfants.size());
+            go->updateScene(program,m);
+        }
+     }
+    void  updateScene(QOpenGLShaderProgram * program, QMatrix4x4 lastM){
+        QMatrix4x4 m= chargeMatriceForShader(program,lastM);
+        geo->drawCubeGeometry(program);
+        qDebug("boucle ");
+            foreach (GameObject* go, enfants) {
+            qDebug("foreach %i \n",enfants.size());
+            go->updateScene(program, m);
         }
      }
 
 
     int a(){return 5;}
 
-
+   void updateMesh(GeometryEngine *ge){
+        geo = ge;
+    }
 
 
 GeometryEngine *geo = new GeometryEngine();
@@ -83,11 +75,16 @@ private:
 
 public:
 
-   void chargeMatriceForShader(QOpenGLShaderProgram * program){
-
-    QMatrix4x4 a= QMatrix4x4 ();
-    a.scale(0.5, 0.5, 0.5);
+   QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program){
+    QMatrix4x4 a = t.doTransformation();
     program->setUniformValue("transform_Matrix", a);
+    return a;
+   }
+   QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, QMatrix4x4 m){
+    QMatrix4x4 a = t.doTransformation();
+
+    program->setUniformValue("transform_Matrix", m*a);
+    return m*a;
    }
 
 
@@ -95,6 +92,8 @@ public:
        qDebug("miaou %i",enfants.size());
        //enfants.push_back(enfant);
        enfants.append(enfant);
+       //TODO
+       //Set parent
 
    }
 

@@ -6,11 +6,17 @@
 #include <QVector3D>
 #include <QVector4D>
 #include <QQuaternion>
+
+//a faire:
+//inversion
+//combinaision
+
+
 class Transform
 {
 public:
     Transform(){
-        s=QVector3D();
+        s=QVector3D(1,1,1);
         r= QQuaternion();
         t = QVector3D();
     }
@@ -20,16 +26,31 @@ public:
         t = tr;
     };
 
-    /*QMatrix4x4 getMatrix(){
+    QMatrix4x4 doTransformation(){
+         QMatrix4x4 a= QMatrix4x4 ();
+         a = doTranslate(doRotate(doScale(a)));
+         return a;
+    }
+    void setRotation( QVector3D & v, float f){
+        r = QQuaternion::fromAxisAndAngle(v,f);
+    }
+    void setRotation(float x,float y,float z, float f){
+        r = QQuaternion::fromAxisAndAngle(QVector3D(x,y,z),f);
+    }
 
-        return s*r*t;
+    void setScale( QVector3D v){
+        s = v;
+    }
+    void setScale( float x, float y, float z){
+        s = QVector3D(x,y,z);
+    }
 
-
-    }*/
-
-
-
-
+    void setTranslate( QVector3D v){
+        t = v;
+    }
+    void setTranslate( float x, float y, float z){
+        t = QVector3D(x,y,z);
+    }
 private:
    //QMatrix3x3 m; // rotation + skew + scale
 
@@ -47,37 +68,43 @@ private:
 protected:
 
     //QVector4D apply( QVector4D p); //p is in affine coords
-    QVector3D applyToPoint( QVector3D p);
-    QVector3D applyToVector( QVector3D v);
-    QVector3D applyToVersor( QVector3D v);
+  //  QVector3D applyToPoint( QVector3D p);
+//    QVector3D applyToVector( QVector3D v);
+ //   QVector3D applyToVersor( QVector3D v);
 
-    Transform combine_with( Transform & t);
-    Transform inverse();
-    Transform interpolate_with( Transform &t, QVector3D k);
+//    Transform combine_with( Transform & t);
+//    Transform inverse();
+ //   Transform interpolate_with( Transform &t, QVector3D k);
 
+   //interpolation
     Transform mix_with(Transform b, float k){
        Transform result;
        result.s = this->s * k + b.s * (1-k);
-       //result.r = this->r . mix_with(b.r, k);
-       result.r = this->r * b.r;
+      // result.r = this->r mix_with(b, k);
+       result.r = QQuaternion::slerp(this->r,b.r,k);
        result.t = this->t * k + b.t * (1-k);
        return result;
     }
-    //echelle translation rotation
+
 
 
     QVector4D apply( QVector4D p);
 
 
-    void setRotation( QVector3D & v, float f){
-        r = QQuaternion::fromAxisAndAngle(v,f);
-    }
 
-    void setScale( QVector3D v){
-        s = v;
+
+
+    QMatrix4x4 doScale(QMatrix4x4 m){
+         m.scale(s);
+         return m;
     }
-    void setTranslate( QVector3D v){
-        t = v;
+    QMatrix4x4 doRotate(QMatrix4x4 m){
+         m.rotate(r);
+         return m;
+    }
+    QMatrix4x4 doTranslate(QMatrix4x4 m){
+         m.translate(t);
+         return m;
     }
 
 

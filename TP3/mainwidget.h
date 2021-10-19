@@ -92,6 +92,8 @@ protected:
     void keyPressEvent(QKeyEvent *e) override;
 
     void cameraControle();
+    GameObject* addGameObject(GameObject *parent, Transform *t, GeometryEngine *mesh);
+    void initMonde();
     void scene();
 
 private:

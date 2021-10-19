@@ -78,13 +78,58 @@ MainWidget::MainWidget(QWidget *parent) :
 {
 }
 
-
-void MainWidget::scene(){
-    Transform tt = Transform();
-   // meshObject mechObj = meshObject();
+void MainWidget::initMonde(){
+    //Transform tt = Transform();
     gameObj = new GameObject();// tt, geo);
 }
 
+GameObject* MainWidget::addGameObject(GameObject *parent, Transform *t, GeometryEngine *mesh){
+    //Transform tt = Transform();
+   // tt.setTranslate(0,1,0);
+   // meshObject mechObj = meshObject();
+    GameObject *gameObj2 = new GameObject(*t);
+    gameObj2->updateMesh(mesh);
+    parent->addChild(gameObj2);
+    return gameObj2;
+
+
+}
+
+void MainWidget::scene(){
+    //Instance INIT GAME OBJECT
+    GeometryEngine *geo1 = new GeometryEngine;
+    geo1->initPlanegeometry();
+    Transform *tr1 = new Transform;
+    addGameObject(gameObj,tr1 , geo1);
+    //Fin creation
+
+    //Instance INIT GAME OBJECT
+    GeometryEngine *geo2 = new GeometryEngine;
+    geo2->initPlanegeometry();
+    Transform *tr2 = new Transform;
+    tr2->setScale(0.5,0.5,0.5);
+    tr2->setTranslate(0,0,1);
+    //tr2->setRotation(1,1,1,90);
+    GameObject* nouveauNoeud = addGameObject(gameObj,tr2 , geo2);
+    //Fin creation
+
+    //Instance INIT GAME OBJECT
+    GeometryEngine *geo3 = new GeometryEngine;
+    geo3->initCubeGeometry();
+    Transform *tr3 = new Transform;
+    tr3->setScale(0.2,0.2,0.2);
+    tr3->setTranslate(0,0,1);
+    addGameObject(nouveauNoeud, tr3 , geo3);
+    //Fin creation
+
+    GeometryEngine *geo4 = new GeometryEngine;
+    geo4->initPlanegeometry();
+    Transform *tr4 = new Transform;
+    tr4->setScale(0.5,0.5,0.5);
+    tr4->setRotation(0,1,0,90);
+    addGameObject(gameObj,tr4 , geo4);
+    //Fin creation
+}
 
 
 
@@ -192,13 +237,19 @@ void MainWidget::initializeGL()
 
 
       geometries = new GeometryEngine;
-      scene();
-      gameObj->geo->initPlanegeometry();
-
-      GameObject *gameObj2 = new GameObject();
+      std::cout<<"INIT MONDE"<<std::endl;
+      initMonde();
       std::cout<<"INIT SCENE"<<std::endl;
+
+     // gameObj->geo->initPlanegeometry();
+
+        scene();
+
+
+   /*   GameObject *gameObj2 = new GameObject();
+
       gameObj2->geo->initCubeGeometry();
-      gameObj->addChild(gameObj2);
+      gameObj->addChild(gameObj2);*/
 
 
 
