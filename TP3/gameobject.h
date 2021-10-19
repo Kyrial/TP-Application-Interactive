@@ -25,6 +25,11 @@ public:
     {
         t = tt;
     }
+    GameObject(Transform tt,Transform anim)
+    {
+        t = tt;
+        animation = anim;
+    }
 
     GameObject(Transform tt, GameObject par, QVector<GameObject*> enf)
     {
@@ -85,6 +90,7 @@ QMatrix4x4 a = t.doTransformation();
    }
    QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 m){
     QMatrix4x4 a = t.doTransformation();
+
 
     program->setUniformValue("transform_Matrix", m*a);
     return m*a;

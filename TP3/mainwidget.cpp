@@ -83,7 +83,7 @@ void MainWidget::initMonde(){
     gameObj = new GameObject();// tt, geo);
 }
 
-GameObject* MainWidget::addGameObject(GameObject *parent, Transform *t, GeometryEngine *mesh){
+GameObject* MainWidget::addGameObject(GameObject *parent, Transform *t, GeometryEngine *mesh, Transform *anim = new Transform()){
     //Transform tt = Transform();
    // tt.setTranslate(0,1,0);
    // meshObject mechObj = meshObject();
@@ -91,8 +91,6 @@ GameObject* MainWidget::addGameObject(GameObject *parent, Transform *t, Geometry
     gameObj2->updateMesh(mesh);
     parent->addChild(gameObj2);
     return gameObj2;
-
-
 }
 
 void MainWidget::scene(){
