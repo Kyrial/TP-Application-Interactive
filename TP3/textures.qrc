@@ -7,5 +7,6 @@
         <file>Heightmap_Rocky.png</file>
         <file>Heightmap_Mountain.png</file>
         <file>heightmap-1024x1024.png</file>
+        <file>textureSoleil.png</file>
     </qresource>
 </RCC>

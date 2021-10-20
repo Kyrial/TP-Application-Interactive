@@ -8,6 +8,7 @@
 #include <QVector4D>
 #include <QQuaternion>
 #include <QVector>
+#include <QOpenGLTexture>
 class GameObject
 {
 public:
@@ -41,6 +42,9 @@ public:
 
     void  updateScene(QOpenGLShaderProgram * program, double deltaTime){
         QMatrix4x4 m= chargeMatriceForShader(program, deltaTime);
+
+        chargerTextureForShader(program);
+
         geo->drawCubeGeometry(program);
         qDebug("boucle ");
             foreach (GameObject* go, enfants) {
@@ -50,6 +54,9 @@ public:
      }
     void  updateScene(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 lastM){
         QMatrix4x4 m= chargeMatriceForShader(program, deltaTime,lastM);
+
+        chargerTextureForShader(program);
+
         geo->drawCubeGeometry(program);
         qDebug("boucle ");
             foreach (GameObject* go, enfants) {
@@ -71,16 +78,27 @@ GeometryEngine *geo = new GeometryEngine();
 private:
 
 //Transform t_globale = Transform();
-   // Transform t_locale = Transform();
+
     Transform t = Transform();
     QVector< GameObject*> enfants= QVector<GameObject*>();
     GameObject *parent;
     Transform animation = Transform();
-   // meshObject obj;
-
+    QOpenGLTexture *texture;
+    bool ifTexture =false;
 
 
 public:
+
+    void chargerTextureForShader(QOpenGLShaderProgram * program){
+        if(ifTexture){
+            texture->bind(4);
+            program->setUniformValue("textureScene", 4);
+        }
+//ifTexture.bind(5);
+        program->setUniformValue("textureSample", ifTexture);
+
+    }
+
 
    QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime){
 
@@ -89,11 +107,11 @@ QMatrix4x4 a = t.doTransformation();
     return a;
    }
    QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 m){
-    QMatrix4x4 a = t.doTransformation();
+    //QMatrix4x4 a = t.doTransformation();
+    QMatrix4x4 anim = t.doAnimation(&animation, deltaTime);
 
-
-    program->setUniformValue("transform_Matrix", m*a);
-    return m*a;
+    program->setUniformValue("transform_Matrix", m*anim);
+    return m*anim;
    }
 
 
@@ -112,9 +130,18 @@ QMatrix4x4 a = t.doTransformation();
    }
 
 
+
+
+void setTexture(QOpenGLTexture *txtr){
+    if(txtr !=NULL){
+    texture = txtr;
+    ifTexture =true;
+    }
+    else{
+         ifTexture =false;
+}}
+
 };
-
-
 
 
 #endif // GAMEOBJECT_H

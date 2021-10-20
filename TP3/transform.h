@@ -31,11 +31,26 @@ public:
          a = doTranslate(doRotate(doScale(a)));
          return a;
     }
+
+    QMatrix4x4 doAnimation(Transform* anim, double deltaTime){
+        Transform a =combine_with(*anim, deltaTime);
+        this->setScale(a.s);
+        this->setRotation(a.r);
+        this->setTranslate(a.t);
+        QMatrix4x4 res = this->doTransformation();
+        return res;
+
+    }
+
+
     void setRotation( QVector3D & v, float f){
         r = QQuaternion::fromAxisAndAngle(v,f);
     }
     void setRotation(float x,float y,float z, float f){
         r = QQuaternion::fromAxisAndAngle(QVector3D(x,y,z),f);
+    }
+    void setRotation(QQuaternion q){
+        r = q;
     }
 
     void setScale( QVector3D v){
@@ -72,7 +87,14 @@ protected:
 //    QVector3D applyToVector( QVector3D v);
  //   QVector3D applyToVersor( QVector3D v);
 
-//    Transform combine_with( Transform & t);
+   Transform combine_with( Transform & b,double deltaTime){
+       Transform result;
+       result.s = this->s *b.s; //(b.s*deltaTime) ;
+       result.r = this->r*b.r;//(b.r*deltaTime);//QQuaternion::slerp(this->r,b.r,0.5);
+       result.t = this->t + b.t*deltaTime;//(b.t*deltaTime);
+       return result;
+    }
+
 //    Transform inverse();
  //   Transform interpolate_with( Transform &t, QVector3D k);
 

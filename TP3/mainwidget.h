@@ -92,7 +92,7 @@ protected:
     void keyPressEvent(QKeyEvent *e) override;
 
     void cameraControle();
-    GameObject* addGameObject(GameObject *parent, Transform *t, GeometryEngine *mesh, Transform *anim );
+    GameObject* addGameObject(GameObject *parent, Transform *t, GeometryEngine *mesh, Transform *anim,QOpenGLTexture *txtr);
     void initMonde();
     void scene();
 

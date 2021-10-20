@@ -83,50 +83,70 @@ void MainWidget::initMonde(){
     gameObj = new GameObject();// tt, geo);
 }
 
-GameObject* MainWidget::addGameObject(GameObject *parent, Transform *t, GeometryEngine *mesh, Transform *anim = new Transform()){
-    //Transform tt = Transform();
-   // tt.setTranslate(0,1,0);
-   // meshObject mechObj = meshObject();
-    GameObject *gameObj2 = new GameObject(*t);
+GameObject* MainWidget::addGameObject(GameObject *parent, Transform *t, GeometryEngine *mesh=new GeometryEngine(), Transform *anim = new Transform(),QOpenGLTexture *texture=NULL){
+//setTexture(QOpenGLTexture *txtr)
+    GameObject *gameObj2 = new GameObject(*t, *anim);
     gameObj2->updateMesh(mesh);
+    gameObj2->setTexture(texture);
     parent->addChild(gameObj2);
     return gameObj2;
 }
 
 void MainWidget::scene(){
-    //Instance INIT GAME OBJECT
-    GeometryEngine *geo1 = new GeometryEngine;
-    geo1->initPlanegeometry();
-    Transform *tr1 = new Transform;
-    addGameObject(gameObj,tr1 , geo1);
+    //Instance INIT GAME OBJECT //NOEUD SOLEIL
+    Transform *t_NSoleil = new Transform;
+    t_NSoleil->setScale(0.8,0.8,0.8);
+    GameObject* noeudSoleil = addGameObject(gameObj,t_NSoleil);
     //Fin creation
 
-    //Instance INIT GAME OBJECT
-    GeometryEngine *geo2 = new GeometryEngine;
-    geo2->initPlanegeometry();
-    Transform *tr2 = new Transform;
-    tr2->setScale(0.5,0.5,0.5);
-    tr2->setTranslate(0,0,1);
-    //tr2->setRotation(1,1,1,90);
-    GameObject* nouveauNoeud = addGameObject(gameObj,tr2 , geo2);
+    //Instance INIT GAME OBJECT //soleil
+    GeometryEngine *geo_Soleil = new GeometryEngine;
+    geo_Soleil->initCubeGeometry();
+    Transform *anim_Soleil = new Transform;
+    anim_Soleil->setRotation(0,0,-0.5,1);
+
+    addGameObject(noeudSoleil,new Transform , geo_Soleil, anim_Soleil,new QOpenGLTexture(QImage(":/textureSoleil.png").mirrored()));
     //Fin creation
 
-    //Instance INIT GAME OBJECT
-    GeometryEngine *geo3 = new GeometryEngine;
-    geo3->initCubeGeometry();
-    Transform *tr3 = new Transform;
-    tr3->setScale(0.2,0.2,0.2);
-    tr3->setTranslate(0,0,1);
-    addGameObject(nouveauNoeud, tr3 , geo3);
+    //Instance INIT GAME OBJECT // NOEUD TERRE
+    Transform *t_NTerre = new Transform;
+    t_NTerre->setScale(0.3,0.3,0.3);
+    t_NTerre->setTranslate(11,0,0);
+    Transform *anim_NTerre = new Transform;
+    anim_NTerre->setRotation(0,0,0.2,1);
+    GameObject* noeudTerre = addGameObject(noeudSoleil,t_NTerre,new GeometryEngine, anim_NTerre);
     //Fin creation
 
-    GeometryEngine *geo4 = new GeometryEngine;
-    geo4->initPlanegeometry();
-    Transform *tr4 = new Transform;
-    tr4->setScale(0.5,0.5,0.5);
-    tr4->setRotation(0,1,0,90);
-    addGameObject(gameObj,tr4 , geo4);
+    //Instance INIT GAME OBJECT //Terre
+    GeometryEngine *geo_Terre = new GeometryEngine;
+    geo_Terre->initPlanegeometry();
+    Transform *t_Terre = new Transform;
+    t_Terre->setRotation(-1,0,0,23.44);
+    Transform *anim_Terre = new Transform;
+    anim_Terre->setRotation(0,0,1,1);
+    addGameObject(noeudTerre,t_Terre , geo_Terre,anim_Terre);
     //Fin creation
+
+    //Instance INIT GAME OBJECT // NOEUD LUNE
+    Transform *t_NLune = new Transform;
+    t_NLune->setScale(0.3,0.3,0.3);
+    t_NLune->setTranslate(10,0,0);
+    Transform *anim_NLune = new Transform;
+    anim_NLune->setRotation(0,0,-5,5);
+    GameObject* noeudLune = addGameObject(noeudTerre,t_NLune,new GeometryEngine, anim_NLune);
+    //Fin creation
+
+    //Instance INIT GAME OBJECT //lune
+    GeometryEngine *geo_Lune = new GeometryEngine;
+    geo_Lune->initCubeGeometry();
+    Transform *t_Lune = new Transform;
+    t_Lune->setRotation(1,0,0,6.68);
+    Transform *anim_Lune = new Transform;
+    anim_Lune->setRotation(0,0,1,1);
+    addGameObject(noeudLune,t_Lune , geo_Lune,anim_Lune);
+    //Fin creation
+
+
 }
 
 
@@ -186,6 +206,8 @@ QVector3D camera_up = QVector3D(0.0f, 0.0f, 0.5f);
 //! [1]
 void MainWidget::timerEvent(QTimerEvent *)
 {
+
+
     // Decrease angular speed (friction)
     angularSpeed *= 0.99;
 
@@ -197,15 +219,15 @@ void MainWidget::timerEvent(QTimerEvent *)
         rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angularSpeed) * rotation;
 
         // Request an update
-        update();
+        //update();
     }
 
     if(Tourne){       deltaTime = lastFrame.elapsed();
         camera_position = QQuaternion::fromAxisAndAngle(QVector3D(0.0f, 0.0f, 2.0f), 0.03*(deltaTime)) * camera_position;
-        update();
+        //update();
         lastFrame.start();
     }
-
+    update();
 
 }
 //! [1]
@@ -365,6 +387,7 @@ void MainWidget::paintGL()
 //! [6]
 
     // Use texture unit 0 which contains cube.png
+
     program.setUniformValue("texture", 0);
     program.setUniformValue("textureGrass", 1);
      program.setUniformValue("textureRock", 2);
@@ -379,7 +402,7 @@ void MainWidget::paintGL()
 
 
 
-
+    deltaTime =0.99;// lastFrame.elapsed();
     gameObj->updateScene(&program, deltaTime);
     //TODO
 
