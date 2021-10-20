@@ -39,7 +39,14 @@
 #include <cfloat>
 #include <cmath>
 #include <cassert>
-
+#include <stdio.h>  /* defines FILENAME_MAX */
+#ifdef WINDOWS
+    #include <direct.h>
+    #define GetCurrentDir _getcwd
+#else
+    #include <unistd.h>
+    #define GetCurrentDir getcwd
+ #endif
 
 
 
@@ -76,8 +83,25 @@ template< class point_t , class type_t > bool open( const std::string & filename
                                                     bool convertToTriangles = true,
                                                     bool randomize = false )
 {
+    char cCurrentPath[FILENAME_MAX];
+
+    if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
+         {
+         return errno;
+         }
+
+    cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
+
+    qDebug("The current working directory is %s", cCurrentPath);
+
+
     std::ifstream myfile;
-    myfile.open(filename.c_str());
+  //  QFile myfile(QApplication::applicationDirPath() + filename.c_str());
+  //  myfile.open(QIODevice::ReadWrite);
+    std::string path =(cCurrentPath);
+    path = ":"+path +"sphere.off";
+    std::cout << path <<" testtttt" << std::endl;
+    myfile.open(path.c_str());//filename.c_str());
     if (!myfile.is_open())
     {
         std::cout << filename << " cannot be opened" << std::endl;
@@ -102,14 +126,21 @@ template< class point_t , class type_t > bool open( const std::string & filename
 
     for( int v = 0 ; v < n_vertices ; ++v )
     {
-        typename point_t::type_t x , y , z;
+        float x , y , z;
+
+        //typename point_t::type_t x , y , z;
+
+        point_t ( x , y , z);
         myfile >> x >> y >> z;
         if( std::isnan(x) )
-            x = typename point_t::type_t(0.0);
+            x =(0.0);
+           // x = typename point_t::type_t(0.0);
         if( std::isnan(y) )
-            y = typename point_t::type_t(0.0);
+           // y = typename point_t::type_t(0.0);
+             y =(0.0);
         if( std::isnan(z) )
-            z = typename point_t::type_t(0.0);
+        //    z = typename point_t::type_t(0.0);
+            z =(0.0);
         vertices[v] = point_t( x , y , z );
     }
 
@@ -120,12 +151,13 @@ template< class point_t , class type_t > bool open( const std::string & filename
         myfile >> n_vertices_on_face;
         if( n_vertices_on_face == 3 )
         {
-            type_t _v1 , _v2 , _v3;
-            std::vector< type_t > _v;
-            myfile >> _v1 >> _v2 >> _v3;
-            _v.push_back( _v1 );
-            _v.push_back( _v2 );
-            _v.push_back( _v3 );
+            //type_t _v1 , _v2 , _v3;
+            unsigned int v1 , v2 ,v3;
+            std::vector< unsigned int > _v;
+            myfile >> v1 >> v2 >> v3;
+            _v.push_back( v1 );
+            _v.push_back( v2 );
+            _v.push_back( v3 );
             faces.push_back( _v );
         }
         else if( n_vertices_on_face > 3 )

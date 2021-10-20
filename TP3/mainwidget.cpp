@@ -101,7 +101,8 @@ void MainWidget::scene(){
 
     //Instance INIT GAME OBJECT //soleil
     GeometryEngine *geo_Soleil = new GeometryEngine;
-    geo_Soleil->initCubeGeometry();
+    //geo_Soleil->initCubeGeometry();
+    geo_Soleil->initMesh(":/sphere.off");
     Transform *anim_Soleil = new Transform;
     anim_Soleil->setRotation(0,0,-0.5,1);
 

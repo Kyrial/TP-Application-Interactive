@@ -46,9 +46,9 @@ public:
         chargerTextureForShader(program);
 
         geo->drawCubeGeometry(program);
-        qDebug("boucle ");
+      //  qDebug("boucle ");
             foreach (GameObject* go, enfants) {
-            qDebug("foreach %i \n",enfants.size());
+         //   qDebug("foreach %i \n",enfants.size());
             go->updateScene(program,deltaTime, m);
         }
      }
@@ -58,9 +58,9 @@ public:
         chargerTextureForShader(program);
 
         geo->drawCubeGeometry(program);
-        qDebug("boucle ");
+   //     qDebug("boucle ");
             foreach (GameObject* go, enfants) {
-            qDebug("foreach %i \n",enfants.size());
+          //  qDebug("foreach %i \n",enfants.size());
             go->updateScene(program,deltaTime, m);
 
         }
@@ -116,7 +116,7 @@ QMatrix4x4 a = t.doTransformation();
 
 
    void addChild(GameObject * enfant){
-       qDebug("miaou %i",enfants.size());
+  //     qDebug("miaou %i",enfants.size());
        //enfants.push_back(enfant);
        enfants.append(enfant);
        enfant->SetParent(this);

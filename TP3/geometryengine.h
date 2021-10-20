@@ -69,7 +69,7 @@ class GeometryEngine : protected QOpenGLFunctions_3_1
 {
 public:
     GeometryEngine();
-    GeometryEngine(std::string filename){
+    //GeometryEngine(std::string filename){
     /*   std::vector<VertexData>  vertice;
        OFFIO::open( filename, vertice);
 
@@ -81,7 +81,7 @@ public:
        // Transfer index data to VBO 1
       // indexBuf.bind();
       // indexBuf.allocate(indices,  ((indexCount)* sizeof(GLushort)));*/
-    }
+   // }
 
     int test(QOpenGLShaderProgram *program){
                 qDebug("test %i", 55);
@@ -91,7 +91,7 @@ public:
 
     virtual ~GeometryEngine();
 
-
+    void initMesh(std::string filename);
     void drawCubeGeometry(QOpenGLShaderProgram *program);
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;
