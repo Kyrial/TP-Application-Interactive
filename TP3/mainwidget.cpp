@@ -139,7 +139,8 @@ void MainWidget::scene(){
 
     //Instance INIT GAME OBJECT //lune
     GeometryEngine *geo_Lune = new GeometryEngine;
-    geo_Lune->initCubeGeometry();
+    //geo_Lune->initCubeGeometry();
+    geo_Lune->initMesh(":/sphere.off");
     Transform *t_Lune = new Transform;
     t_Lune->setRotation(1,0,0,6.68);
     Transform *anim_Lune = new Transform;
@@ -247,7 +248,7 @@ void MainWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
 
    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
- //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
+// glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
     // Enable back face culling
   //  glEnable(GL_CULL_FACE);
 //! [2]
@@ -415,22 +416,22 @@ void MainWidget::keyPressEvent(QKeyEvent *event)
 qDebug("touche appuyé ");
     switch (event->key()) {
         case Qt::Key_Z: /* haut */
-            projection.translate(0.0, 1.0, 0.0);
+            projection.translate(0.0, 0.5, 0.0);
             break;
         case Qt::Key_Q: /* gauche */;
-            projection.translate(-1.0, 0.0, 0.0);
+            projection.translate(-0.5, 0.0, 0.0);
             break;
         case Qt::Key_D: /*droite */
-            projection.translate(1.0, 0.0, 0.0);
+            projection.translate(0.5, 0.0, 0.0);
           break;
         case Qt::Key_S: /* bas */
-            projection.translate(0.0, -1.0, 0.0);
+            projection.translate(0.0, -0.5, 0.0);
             break;
         case Qt::Key_A: /* descendre */
-            projection.translate(0.0, 0.0, 1.0);
+            projection.translate(0.0, 0.0, .5);
             break;
         case Qt::Key_E: /* monter */
-            projection.translate(0.0, 0.0, -1.0);
+            projection.translate(0.0, 0.0, -0.5);
             break;
         case Qt::Key_C: /*  tourne terrain */
 {

@@ -69,25 +69,7 @@ class GeometryEngine : protected QOpenGLFunctions_3_1
 {
 public:
     GeometryEngine();
-    //GeometryEngine(std::string filename){
-    /*   std::vector<VertexData>  vertice;
-       OFFIO::open( filename, vertice);
 
-
-       // Transfer vertex data to VBO 0
-       arrayBuf.bind();
-       arrayBuf.allocate(vertice, vertice.size()+sizeof(QVector3D));
-
-       // Transfer index data to VBO 1
-      // indexBuf.bind();
-      // indexBuf.allocate(indices,  ((indexCount)* sizeof(GLushort)));*/
-   // }
-
-    int test(QOpenGLShaderProgram *program){
-                qDebug("test %i", 55);
-            //std::cout << indexBuf << " , meow " <<   std::endl;
-            return 5;
-    }
 
     virtual ~GeometryEngine();
 
@@ -98,6 +80,8 @@ public:
 
     void initCubeGeometry();
     void initPlanegeometry();
+
+    bool triangle_strip = true;
 private:
 
     //void initPlanegeometry();

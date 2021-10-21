@@ -20,12 +20,11 @@ HEADERS += \
 
 RESOURCES += \
     shaders.qrc \
-    textures.qrc
+    textures.qrc \
+	mesh.qrc
 
 # install
 target.path = $$[YOUR_PATH]
 INSTALLS += target
 
-DISTFILES += \
-    sphere.obj \
-    sphere.off
+

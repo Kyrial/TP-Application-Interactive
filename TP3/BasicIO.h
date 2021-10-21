@@ -39,6 +39,9 @@
 #include <cfloat>
 #include <cmath>
 #include <cassert>
+#include <QTextStream>
+#include <QCoreApplication>
+#include <QDir>
 #include <stdio.h>  /* defines FILENAME_MAX */
 #ifdef WINDOWS
     #include <direct.h>
@@ -83,45 +86,52 @@ template< class point_t , class type_t > bool open( const std::string & filename
                                                     bool convertToTriangles = true,
                                                     bool randomize = false )
 {
+    QString fEmp = QCoreApplication::applicationDirPath()+ QDir::separator() +"sphere.off";
+    std::cout <<"ici         "<< qPrintable(fEmp) <<std::endl;
     char cCurrentPath[FILENAME_MAX];
-
     if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
          {
          return errno;
          }
-
     cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
-
     qDebug("The current working directory is %s", cCurrentPath);
-
-
     std::ifstream myfile;
-  //  QFile myfile(QApplication::applicationDirPath() + filename.c_str());
-  //  myfile.open(QIODevice::ReadWrite);
     std::string path =(cCurrentPath);
-    path = ":"+path +"sphere.off";
-    std::cout << path <<" testtttt" << std::endl;
-    myfile.open(path.c_str());//filename.c_str());
-    if (!myfile.is_open())
+    path = path +"\\debug\\sphere.off";
+  //  std::cout << path <<" testtttt" << std::endl;
+    myfile.open(/*path.c_str());//*/filename.c_str());
+  /*  if (!myfile.is_open())
+    {
+        std::cout << filename << " cannot be opened" << std::endl;
+        return false;
+    }*/
+ //   QFile myFile(/*QApplication::applicationDirPath() +*/ filename.c_str());
+    QFile myFile(filename.c_str());
+  //  QFile myFile(fEmp);
+
+    if(!myFile.open(QIODevice::ReadOnly))
     {
         std::cout << filename << " cannot be opened" << std::endl;
         return false;
     }
+    QTextStream in(&myFile);
 
-    std::string magic_s;
 
-    myfile >> magic_s;
+    //std::string magic_s;
+    QString magic_s;
+    //myfile >> magic_s;
+    in >> magic_s;
 
     if( magic_s != "OFF" )
     {
-        std::cout << magic_s << " != OFF :   We handle ONLY *.off files." << std::endl;
+        std::cout << qPrintable(magic_s) << " != OFF :   We handle ONLY *.off files." << std::endl;
         myfile.close();
         return false;
     }
 
     int n_vertices , n_faces , dummy_int;
-    myfile >> n_vertices >> n_faces >> dummy_int;
-
+   // myfile >> n_vertices >> n_faces >> dummy_int;
+    in  >> n_vertices >> n_faces >> dummy_int;
     vertices.resize(n_vertices);
 
     for( int v = 0 ; v < n_vertices ; ++v )
@@ -131,7 +141,8 @@ template< class point_t , class type_t > bool open( const std::string & filename
         //typename point_t::type_t x , y , z;
 
         point_t ( x , y , z);
-        myfile >> x >> y >> z;
+       // myfile >> x >> y >> z;
+         in >> x >> y >> z;
         if( std::isnan(x) )
             x =(0.0);
            // x = typename point_t::type_t(0.0);
@@ -148,13 +159,15 @@ template< class point_t , class type_t > bool open( const std::string & filename
     for( int f = 0 ; f < n_faces ; ++f )
     {
         int n_vertices_on_face;
-        myfile >> n_vertices_on_face;
+        in >> n_vertices_on_face;
+       // myfile >> n_vertices_on_face;
         if( n_vertices_on_face == 3 )
         {
             //type_t _v1 , _v2 , _v3;
             unsigned int v1 , v2 ,v3;
             std::vector< unsigned int > _v;
-            myfile >> v1 >> v2 >> v3;
+           // myfile >> v1 >> v2 >> v3;
+            in >> v1 >> v2 >> v3;
             _v.push_back( v1 );
             _v.push_back( v2 );
             _v.push_back( v3 );
@@ -165,7 +178,8 @@ template< class point_t , class type_t > bool open( const std::string & filename
             std::vector< type_t > vhandles;
             vhandles.resize(n_vertices_on_face);
             for( int i=0 ; i < n_vertices_on_face ; ++i )
-                myfile >> vhandles[i];
+                in >> vhandles[i];
+   //             myfile >> vhandles[i];
 
             if( convertToTriangles )
             {
@@ -188,6 +202,7 @@ template< class point_t , class type_t > bool open( const std::string & filename
         {
             std::cout << "OFFIO::open error : Face number " << f << " has " << n_vertices_on_face << " vertices" << std::endl;
             myfile.close();
+            myFile.close();
             return false;
         }
     }

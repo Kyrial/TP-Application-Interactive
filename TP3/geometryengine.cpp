@@ -84,34 +84,35 @@ void GeometryEngine::initMesh(std::string filename){
        std::vector<QVector3D>  vertex;
        std::vector< std::vector<unsigned int> >  faces;
 
-       OFFIO::open(filename, vertex, faces);
+       OFFIO::open(filename, vertex, faces, true);
 
 
-       unsigned int vertexNumber = vertex.size() ;
+       unsigned int vertexNumber = vertex.size();
        VertexData vertices[vertexNumber];
        unsigned int indexCount = faces.size()*3;
        GLushort indices[indexCount];
 
 
        for(int i=0; i<vertexNumber;i++) {
-           vertices[i]= {vertex[i], QVector2D(i/vertexNumber, i/vertexNumber)};
+           vertices[i]= {vertex[i], QVector2D(i/(float)vertexNumber, i/(float)vertexNumber)};
        }
 
        for(int i=0; i<indexCount;i+=3) {
-           indices[i]= faces[i][0];
-           indices[i+1]= faces[i][1];
-           indices[i+2]= faces[i][2];
+           indices[i]= faces[i/3][0];
+           indices[i+1]= faces[i/3][1];
+           indices[i+2]= faces[i/3][2];
        }
 
        qDebug("vertexNumber :%i, et indexCount = %i \n ",vertexNumber, indexCount );
 
        // Transfer vertex data to VBO 0
        arrayBuf.bind();
-       arrayBuf.allocate(vertices, vertexNumber+sizeof(QVector3D));
+       arrayBuf.allocate(vertices, vertexNumber * sizeof(VertexData));
 
        // Transfer index data to VBO 1
        indexBuf.bind();
        indexBuf.allocate(indices,  ((indexCount)* sizeof(GLushort)));
+       triangle_strip = true;
 }
 
 void GeometryEngine::initCubeGeometry()
@@ -285,8 +286,11 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
     // Draw cube geometry using indices from VBO 1
-   int size = (int)indexBuf.size();
+    int size = (int)indexBuf.size();
   // std::cout << indexBuf.size() << " , meow " <<  size << std::endl;
-    glDrawElements(GL_TRIANGLE_STRIP, size/2, GL_UNSIGNED_SHORT, 0); //Careful update indicesNumber when creating new geometry
+    if(triangle_strip)
+        glDrawElements(GL_TRIANGLE_STRIP, size/2, GL_UNSIGNED_SHORT, 0); //Careful update indicesNumber when creating new geometry
+    else
+        glDrawElements(GL_TRIANGLES, size/2, GL_UNSIGNED_SHORT, 0);
 }
 //! [2]
