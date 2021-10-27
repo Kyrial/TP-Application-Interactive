@@ -94,7 +94,8 @@ void GeometryEngine::initMesh(std::string filename){
 
 
        for(int i=0; i<vertexNumber;i++) {
-           vertices[i]= {vertex[i], QVector2D(i/(float)vertexNumber, i/(float)vertexNumber)};
+           //vertices[i]= {vertex[i], QVector2D(i/(float)vertexNumber, i/(float)vertexNumber)};
+           vertices[i]= {vertex[i], QVector2D(vertex[i][0]+vertex[i][1], vertex[i][0]+vertex[i][2])};
        }
 
        for(int i=0; i<indexCount;i+=3) {
