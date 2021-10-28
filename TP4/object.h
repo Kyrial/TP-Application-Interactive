@@ -11,99 +11,57 @@
 
 class Object
 {
+    ///ATTRIBUT
 public:
-    Object();
+    GeometryEngine *geo = new GeometryEngine();
+protected:
+    Transform t = Transform();
+    Transform animation = Transform();
+    QOpenGLTexture *texture;
+    bool ifTexture =false;
 
-
-
-void  updateScene(QOpenGLShaderProgram * program, double deltaTime){
-    QMatrix4x4 m= chargeMatriceForShader(program, deltaTime);
-
-    chargerTextureForShader(program);
-
-    geo->drawCubeGeometry(program);
-  //  qDebug("boucle ");
-        foreach (GameObject* go, enfants) {
-     //   qDebug("foreach %i \n",enfants.size());
-        go->updateScene(program,deltaTime, m);
-    }
- }
-void  updateScene(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 lastM){
-    QMatrix4x4 m= chargeMatriceForShader(program, deltaTime,lastM);
-
-    chargerTextureForShader(program);
-
-    geo->drawCubeGeometry(program);
-//     qDebug("boucle ");
-        foreach (GameObject* go, enfants) {
-      //  qDebug("foreach %i \n",enfants.size());
-        go->updateScene(program,deltaTime, m);
-    }
- }
-
-
-//  int a(){return 5;}
-
-void updateMesh(GeometryEngine *ge){
-    geo = ge;
-}
-
-
-GeometryEngine *geo = new GeometryEngine();
-private:
-
-//Transform t_globale = Transform();
-
-Transform t = Transform();
-QVector< GameObject*> enfants= QVector<GameObject*>();
-GameObject *parent;
-Transform animation = Transform();
-QOpenGLTexture *texture;
-bool ifTexture =false;
-
-
+    ///Constructeur
 public:
+    Object():t(Transform()){}
+    Object(Transform tt):t(tt){}
+    Object(Transform tt,Transform anim):t(tt),animation(anim){}
 
-void chargerTextureForShader(QOpenGLShaderProgram * program){
-    if(ifTexture){
-        texture->bind(4);
-        program->setUniformValue("textureScene", 4);
+
+   ///Getter/Setter
+    void updateMesh(GeometryEngine *ge){
+        geo = ge;
     }
-//ifTexture.bind(5);
-    program->setUniformValue("textureSample", ifTexture);
+    void setTexture(QOpenGLTexture *txtr){
+        if(txtr !=NULL){
+            texture = txtr;
+            ifTexture =true;
+        }
+        else{
+            ifTexture =false;
+        }}
 
-}
-
-
-QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime){
-
-QMatrix4x4 a = t.doTransformation();
-program->setUniformValue("transform_Matrix", a);
-return a;
-}
-QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 m){
-//QMatrix4x4 a = t.doTransformation();
-QMatrix4x4 anim = t.doAnimation(&animation, deltaTime);
-
-program->setUniformValue("transform_Matrix", m*anim);
-return m*anim;
-}
-
-
+ ///Methode
+protected:
+    void chargerTextureForShader(QOpenGLShaderProgram * program){
+        if(ifTexture){
+            texture->bind(4);
+            program->setUniformValue("textureScene", 4);
+        }
+        //ifTexture.bind(5);
+        program->setUniformValue("textureSample", ifTexture);
+    }
 
 
-
-
-void setTexture(QOpenGLTexture *txtr){
-if(txtr !=NULL){
-texture = txtr;
-ifTexture =true;
-}
-else{
-     ifTexture =false;
-}}
-
-
+    QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime){
+        QMatrix4x4 a = t.doTransformation();
+        program->setUniformValue("transform_Matrix", a);
+        return a;
+    }
+    QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 m){
+        QMatrix4x4 anim = t.doAnimation(&animation, deltaTime);
+        program->setUniformValue("transform_Matrix", m*anim);
+        return m*anim;
+    }
 
 
 };

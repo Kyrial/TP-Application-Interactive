@@ -8,7 +8,7 @@ class mobileObj
 public:
     mobileObj();
 
-    Transform t;
+    //Transform t;
     QVector3D coord = QVector3D();
 
     GeometryEngine *geo = new GeometryEngine();

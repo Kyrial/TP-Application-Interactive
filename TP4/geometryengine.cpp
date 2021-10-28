@@ -155,7 +155,7 @@ void GeometryEngine::initMesh(std::string filename){
        }
 
        qDebug("vertexNumber :%i, et indexCount = %i \n ",vertexNumber, indexCount );
-       initBB(vertices, vertexNumber)
+       initBB(vertices, vertexNumber);
        // Transfer vertex data to VBO 0
        arrayBuf.bind();
        arrayBuf.allocate(vertices, vertexNumber * sizeof(VertexData));
