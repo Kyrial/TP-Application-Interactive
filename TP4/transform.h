@@ -13,20 +13,23 @@
 //combinaision
 
 
-class Transform
+class  Transform
 {
-public:
-    Transform(){
-        s=QVector3D(1,1,1);
-        r= QQuaternion();
-        t = QVector3D();
-    }
-    Transform(QVector3D sc, QQuaternion ro, QVector3D tr){
-        s = sc;
-        r = ro;
-        t = tr;
-    };
+private:
+//Attribut
+    QVector3D s; //uniform scale
+   QQuaternion r; // rotation
+   QVector3D t; // translation
 
+
+
+
+public:
+   //constructeur
+    Transform():s(QVector3D(1,1,1)),  r(QQuaternion()), t(QVector3D()){}
+    Transform(QVector3D sc, QQuaternion ro, QVector3D tr):s(sc), r(ro), t(tr){}
+
+//methode
     QMatrix4x4 doTransformation(){
          QMatrix4x4 a= QMatrix4x4 ();
          a = doTranslate(doRotate(doScale(a)));
@@ -49,6 +52,7 @@ public:
     }
     void setRotation(float x,float y,float z, float f){
         r = QQuaternion::fromAxisAndAngle(QVector3D(x,y,z),f);
+
     }
     void setRotation(QQuaternion q){
         r = q;
@@ -67,21 +71,14 @@ public:
     void setTranslate( float x, float y, float z){
         t = QVector3D(x,y,z);
     }
-private:
-   //QMatrix3x3 m; // rotation + skew + scale
+
+    void setTranslate(float vit){
+        t = t*vit;
+    }
 
 
 
 
-
-   QVector3D s; //uniform scale
-   QQuaternion r; // rotation
-   QVector3D t; // translation
-
-
-
-
-protected:
 
     //QVector4D apply( QVector4D p); //p is in affine coords
   //  QVector3D applyToPoint( QVector3D p);
@@ -91,8 +88,12 @@ protected:
    Transform combine_with( Transform & b,double deltaTime){
        Transform result;
        result.s = this->s *b.s; //(b.s*deltaTime) ;
-       result.r = this->r*b.r;//(b.r*deltaTime);//QQuaternion::slerp(this->r,b.r,0.5);
-       result.t = this->t + b.t*deltaTime;//(b.t*deltaTime);
+
+       QVector3D angle = QVector3D();
+       float f = 1;
+       b.r.getAxisAndAngle(&angle,&f);
+       result.r = this->r * QQuaternion::fromAxisAndAngle(angle,f*(0.03*deltaTime));//(b.r*deltaTime);//QQuaternion::slerp(this->r,b.r,0.5);
+       result.t = this->t + b.t *deltaTime*0.03;//(b.t*deltaTime);
        return result;
     }
 
@@ -115,7 +116,7 @@ protected:
 
 
 
-
+protected:
 
     QMatrix4x4 doScale(QMatrix4x4 m){
          m.scale(s);
@@ -135,5 +136,3 @@ protected:
 };
 #endif // TRANSFORM_H
 
-
-//gameobject : liste enfant, pointeur parent

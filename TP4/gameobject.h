@@ -19,7 +19,6 @@ private:
     GameObject *parent;
 
 
-
     ///Constructeur
 public:
     GameObject():Object(),parent(nullptr){}
@@ -51,17 +50,14 @@ public:
 
 
 
-
     ///Methode
 
 
     void  updateScene(QOpenGLShaderProgram * program, double deltaTime){
         QMatrix4x4 m= chargeMatriceForShader(program, deltaTime);
 
-        chargerTextureForShader(program);
+        Object::updateScene(program);
 
-        geo->drawCubeGeometry(program);
-        //  qDebug("boucle ");
         foreach (GameObject* go, enfants) {
             //   qDebug("foreach %i \n",enfants.size());
             go->updateScene(program,deltaTime, m);
@@ -70,9 +66,7 @@ public:
     void  updateScene(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 lastM){
         QMatrix4x4 m= chargeMatriceForShader(program, deltaTime,lastM);
 
-        chargerTextureForShader(program);
-
-        geo->drawCubeGeometry(program);
+        Object::updateScene(program);
         //     qDebug("boucle ");
         foreach (GameObject* go, enfants) {
             //  qDebug("foreach %i \n",enfants.size());

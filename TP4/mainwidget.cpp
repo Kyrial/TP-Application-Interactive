@@ -55,9 +55,7 @@
 #include <math.h>
 #include <QElapsedTimer>
 
-int FPS = 20;
-QElapsedTimer lastFrame;
-double deltaTime = 1;
+
 bool Tourne = false;
 
 MainWidget::MainWidget(){}
@@ -84,13 +82,23 @@ void MainWidget::initMonde(){
 }
 
 GameObject* MainWidget::addGameObject(GameObject *parent, Transform *t, GeometryEngine *mesh=new GeometryEngine(), Transform *anim = new Transform(),QOpenGLTexture *texture=NULL){
-//setTexture(QOpenGLTexture *txtr)
+    //setTexture(QOpenGLTexture *txtr)
     GameObject *gameObj2 = new GameObject(*t, *anim);
     gameObj2->updateMesh(mesh);
     gameObj2->setTexture(texture);
     parent->addChild(gameObj2);
     return gameObj2;
 }
+MobileObj* MainWidget::addMobileObject(GameObject *parent, Transform *t, GeometryEngine *mesh=new GeometryEngine(), Transform *anim = new Transform(),QOpenGLTexture *texture=NULL){
+    //setTexture(QOpenGLTexture *txtr)
+    //MobileObj *Obj2
+    mobileobj= new MobileObj(*t, *anim);
+    mobileobj->updateMesh(mesh);
+    mobileobj->setTexture(texture);
+    //parent->addChild(gameObj2);
+    return mobileobj;
+}
+
 
 void MainWidget::scene(){
     //Instance INIT GAME OBJECT //NOEUD SOLEIL
@@ -105,9 +113,9 @@ void MainWidget::scene(){
     geo_Soleil->initMesh(":/sphere.off");
     Transform *anim_Soleil = new Transform;
     anim_Soleil->setRotation(0,0,-0.5,1);
-
     addGameObject(noeudSoleil,new Transform , geo_Soleil, anim_Soleil,new QOpenGLTexture(QImage(":/textureSoleil.png").mirrored()));
     //Fin creation
+
 
     //Instance INIT GAME OBJECT // NOEUD TERRE
     Transform *t_NTerre = new Transform;
@@ -120,7 +128,8 @@ void MainWidget::scene(){
 
     //Instance INIT GAME OBJECT //Terre
     GeometryEngine *geo_Terre = new GeometryEngine;
-    geo_Terre->initPlanegeometry();
+   // geo_Terre->initPlanegeometry();
+    geo_Terre->initMesh(":/sphere.off");
     Transform *t_Terre = new Transform;
     t_Terre->setRotation(-1,0,0,23.44);
     Transform *anim_Terre = new Transform;
@@ -130,8 +139,8 @@ void MainWidget::scene(){
 
     //Instance INIT GAME OBJECT // NOEUD LUNE
     Transform *t_NLune = new Transform;
-    t_NLune->setScale(0.3,0.3,0.3);
-    t_NLune->setTranslate(10,0,0);
+    t_NLune->setScale(0.2,0.2,0.2);
+    t_NLune->setTranslate(15,0,0);
     Transform *anim_NLune = new Transform;
     anim_NLune->setRotation(0,0,-5,5);
     GameObject* noeudLune = addGameObject(noeudTerre,t_NLune,new GeometryEngine, anim_NLune);
@@ -141,12 +150,29 @@ void MainWidget::scene(){
     GeometryEngine *geo_Lune = new GeometryEngine;
     //geo_Lune->initCubeGeometry();
     geo_Lune->initMesh(":/sphere.off");
+    // geo_Lune->initMesh(":/space_station.off");
     Transform *t_Lune = new Transform;
     t_Lune->setRotation(1,0,0,6.68);
     Transform *anim_Lune = new Transform;
     anim_Lune->setRotation(0,0,1,1);
     addGameObject(noeudLune,t_Lune , geo_Lune,anim_Lune);
     //Fin creation
+    ////////////
+
+    //Instance INIT GAME MOBILE //test
+    GeometryEngine *geo_mobile = new GeometryEngine;
+    //geo_Soleil->initCubeGeometry();
+    geo_mobile->initMesh(":/space_station.off");
+    Transform *t_mobile = new Transform;
+    t_mobile->setScale(0.2,0.2,0.2);
+    Transform *anim_mobile = new Transform;
+    anim_mobile->setTranslate(1.5,0,1.5);
+    addMobileObject(noeudTerre,t_mobile , geo_mobile, anim_mobile/*,new QOpenGLTexture(QImage(":/textureSoleil.png").mirrored())*/);
+    //Fin creation
+
+
+    ///
+
 
 
 }
@@ -227,9 +253,13 @@ void MainWidget::timerEvent(QTimerEvent *)
     if(Tourne){       deltaTime = lastFrame.elapsed();
         camera_position = QQuaternion::fromAxisAndAngle(QVector3D(0.0f, 0.0f, 2.0f), 0.03*(deltaTime)) * camera_position;
         //update();
-        lastFrame.start();
+
     }
+//    deltaTime = lastFrame.elapsed();
+//    qDebug("deltaTime: %f", deltaTime);
     update();
+
+   // lastFrame.start();
 
 }
 //! [1]
@@ -243,31 +273,31 @@ void MainWidget::initializeGL()
     initShaders();
     initTextures();
 
-//! [2]
+    //! [2]
     // Enable depth buffer
     glEnable(GL_DEPTH_TEST);
 
-   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
-// glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+    // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
     // Enable back face culling
-  //  glEnable(GL_CULL_FACE);
-//! [2]
+    //  glEnable(GL_CULL_FACE);
+    //! [2]
 
 
 
 
 
-      geometries = new GeometryEngine;
-      std::cout<<"INIT MONDE"<<std::endl;
-      initMonde();
-      std::cout<<"INIT SCENE"<<std::endl;
+    geometries = new GeometryEngine;
+    std::cout<<"INIT MONDE"<<std::endl;
+    initMonde();
+    std::cout<<"INIT SCENE"<<std::endl;
 
-     // gameObj->geo->initPlanegeometry();
+    // gameObj->geo->initPlanegeometry();
 
-        scene();
+    scene();
 
 
-   /*   GameObject *gameObj2 = new GameObject();
+    /*   GameObject *gameObj2 = new GameObject();
 
       gameObj2->geo->initCubeGeometry();
       gameObj->addChild(gameObj2);*/
@@ -276,7 +306,7 @@ void MainWidget::initializeGL()
 
 
     // Use QBasicTimer because its faster than QTimer
-    timer.start(FPS, this);
+    timer.start(1000./FPS, this);
 }
 
 //! [3]
@@ -304,11 +334,11 @@ void MainWidget::initShaders()
 void MainWidget::initTextures()
 {
     // Load cube.png image
-//    texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
-//texture = new QOpenGLTexture(QImage(":/grass.png").mirrored());
+    //    texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
+    //texture = new QOpenGLTexture(QImage(":/grass.png").mirrored());
     texture = new QOpenGLTexture(QImage(":/heightmap-1024x1024.png").mirrored());
-   // texture = new QOpenGLTexture(QImage(":/Heightmap_Mountain.png").mirrored());
-//texture = new QOpenGLTexture(QImage(":/Heightmap_Rocky.png").mirrored());
+    // texture = new QOpenGLTexture(QImage(":/Heightmap_Mountain.png").mirrored());
+    //texture = new QOpenGLTexture(QImage(":/Heightmap_Rocky.png").mirrored());
     textureGrass =new QOpenGLTexture(QImage(":/grass.png").mirrored());
     textureRock =new QOpenGLTexture(QImage(":/rock.png").mirrored());
     textureSnow =new QOpenGLTexture(QImage(":/snowrocks.png").mirrored());
@@ -348,7 +378,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 1.2, zFar = 70.0, fov = 45.0;
+    const qreal zNear = 0.1, zFar = 80.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -370,7 +400,7 @@ void MainWidget::paintGL()
     textureGrass->bind(1);
     textureRock->bind(2);
     textureSnow->bind(3);
-//! [6]
+    //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
     matrix.translate(0.0, 0.0, -5.0);
@@ -378,88 +408,96 @@ void MainWidget::paintGL()
 
 
 
-     QMatrix4x4 view;
-     view.lookAt((camera_position), QVector3D(0, 0, 0), camera_up);
+    QMatrix4x4 view;
+    view.lookAt((camera_position), QVector3D(0, 0, 0), camera_up);
 
 
 
     // Set modelview-projection matrix
     program.setUniformValue("mvp_matrix",  projection *  matrix * view);
     // program.setUniformValue("mvp_matrix",  matrix * view * projection);
-//! [6]
+    //! [6]
 
     // Use texture unit 0 which contains cube.png
 
     program.setUniformValue("texture", 0);
     program.setUniformValue("textureGrass", 1);
-     program.setUniformValue("textureRock", 2);
-      program.setUniformValue("textureSnow", 3);
+    program.setUniformValue("textureRock", 2);
+    program.setUniformValue("textureSnow", 3);
     // Draw cube geometry
-     // geometries->drawCubeGeometry(&program);
+    // geometries->drawCubeGeometry(&program);
 
-      //##############
-      // gameObj->chargeMatriceForShader(&program);
+    //##############
+    // gameObj->chargeMatriceForShader(&program);
 
-   // gameObj->geo.drawCubeGeometry(&program);
+    // gameObj->geo.drawCubeGeometry(&program);
 
 
 
-    deltaTime =0.99;// lastFrame.elapsed();
+//    deltaTime =0.99;// lastFrame.elapsed();
+    deltaTime = lastFrame.elapsed();
+    qDebug("deltaTime: %f", deltaTime);
     gameObj->updateScene(&program, deltaTime);
     //TODO
-
-       //geometries->drawCubeGeometry(&program);
+    mobileobj->updateScene(&program,deltaTime);
+    lastFrame.start();
+    //geometries->drawCubeGeometry(&program);
 }
 
 void MainWidget::keyPressEvent(QKeyEvent *event)
 {
-qDebug("touche appuyé ");
+    qDebug("touche appuyé ");
     switch (event->key()) {
-        case Qt::Key_Z: /* haut */
-            projection.translate(0.0, 0.5, 0.0);
-            break;
-        case Qt::Key_Q: /* gauche */;
-            projection.translate(-0.5, 0.0, 0.0);
-            break;
-        case Qt::Key_D: /*droite */
-            projection.translate(0.5, 0.0, 0.0);
-          break;
-        case Qt::Key_S: /* bas */
-            projection.translate(0.0, -0.5, 0.0);
-            break;
-        case Qt::Key_A: /* descendre */
-            projection.translate(0.0, 0.0, .5);
-            break;
-        case Qt::Key_E: /* monter */
-            projection.translate(0.0, 0.0, -0.5);
-            break;
-        case Qt::Key_C: /*  tourne terrain */
-{
+    case Qt::Key_Z: /* haut */
+        projection.translate(0.0, 0.2, 0.0);
+        break;
+    case Qt::Key_Q: /* gauche */;
+        projection.translate(-0.2, 0.0, 0.0);
+        break;
+    case Qt::Key_D: /*droite */
+        projection.translate(0.2, 0.0, 0.0);
+        break;
+    case Qt::Key_S: /* bas */
+        projection.translate(0.0, -0.2, 0.0);
+        break;
+    case Qt::Key_A: /* descendre */
+        projection.translate(0.0, 0.0, .2);
+        break;
+    case Qt::Key_E: /* monter */
+        projection.translate(0.0, 0.0, -0.2);
+        break;
+    case Qt::Key_C: /*  tourne terrain */
+    {
 
-            lastFrame.start();
-            Tourne = Tourne == true ? false: true;
+        //lastFrame.start();
+        Tourne = Tourne == true ? false: true;
         break;
     }
+    case Qt::Key_P: /*  tourne terrain */
+    {
 
+        gameObj->animate = gameObj->animate == true ? false: true;
+        break;
+    }
     }
 
     //projection.translate(0.0, 0.0, -1.0) ;
-      update();
+    //update();
 
     // Save mouse press position
-  //  mousePressPosition = QVector2D(e->localPos());
+    //  mousePressPosition = QVector2D(e->localPos());
 }
 
 
 
 void MainWidget::cameraControle(){
 
-       //QMatrix4x4 view = QMatrix4x4::lookAt(camera_position, camera_position + camera_target, camera_up);
-       //float currentFrame = glfwGetTime();
+    //QMatrix4x4 view = QMatrix4x4::lookAt(camera_position, camera_position + camera_target, camera_up);
+    //float currentFrame = glfwGetTime();
     // float deltaTime = currentFrame - lastFrame;
-     //   float lastFrame = currentFrame;
- //Camera zoom in and out
- /*   float cameraSpeed = 2.5 * deltaTime;
+    //   float lastFrame = currentFrame;
+    //Camera zoom in and out
+    /*   float cameraSpeed = 2.5 * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         //camera_position += cameraSpeed * camera_target;
         camera_position += cameraSpeed * glm::vec3(0.0f, 0.0f, -1.0f);

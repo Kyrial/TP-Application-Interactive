@@ -75,10 +75,11 @@ int main(int argc, char *argv[])
     //MainWidget widget(500);
 
     //widget.show();
-    MainWidget widget2(20);
+    MainWidget widget2(60);
 
     widget2.show();
-
+    MainWidget widge2(5);
+    widge2.show();
 
 
 #else

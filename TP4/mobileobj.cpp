@@ -1,6 +1,5 @@
 #include "mobileobj.h"
 
-mobileObj::mobileObj()
-{
-
-}
+//mobileObj::mobileObj()
+//{
+//}

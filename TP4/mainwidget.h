@@ -54,6 +54,7 @@
 #include "geometryengine.h"
 #include "gameobject.h"
 //#include "meshobject.h"
+#include "mobileobj.h"
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QMatrix4x4>
@@ -62,7 +63,7 @@
 #include <QBasicTimer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
-
+#include <QElapsedTimer>
 class GeometryEngine;
 
 class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_1
@@ -77,6 +78,11 @@ public:
     MainWidget(int fps);
 
 void modifFPS(int x);
+
+int FPS = 20;
+QElapsedTimer lastFrame;
+double deltaTime = 1;
+
 protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
@@ -93,6 +99,9 @@ protected:
 
     void cameraControle();
     GameObject* addGameObject(GameObject *parent, Transform *t, GeometryEngine *mesh, Transform *anim,QOpenGLTexture *txtr);
+    MobileObj* addMobileObject(GameObject *parent, Transform *t, GeometryEngine *mesh, Transform *anim,QOpenGLTexture *texture);
+
+
     void initMonde();
     void scene();
 
@@ -101,7 +110,7 @@ private:
     QOpenGLShaderProgram program;
     GeometryEngine *geometries;
     GameObject *gameObj;
-
+    MobileObj *mobileobj;
     QOpenGLTexture *texture;
 
     QOpenGLTexture * textureGrass;
