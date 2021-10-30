@@ -55,6 +55,7 @@
 #include "gameobject.h"
 //#include "meshobject.h"
 #include "mobileobj.h"
+#include "cameraobject.h"
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QMatrix4x4>
@@ -98,8 +99,8 @@ protected:
     void keyPressEvent(QKeyEvent *e) override;
 
     void cameraControle();
-    GameObject* addGameObject(GameObject *parent, Transform *t, GeometryEngine *mesh, Transform *anim,QOpenGLTexture *txtr);
-    MobileObj* addMobileObject(GameObject *parent, Transform *t, GeometryEngine *mesh, Transform *anim,QOpenGLTexture *texture);
+    Object* addGameObject(Object *parent, Transform *t, GeometryEngine *mesh, Transform *anim,QOpenGLTexture *txtr);
+    Object* addMobileObject(Object *parent, Transform *t, GeometryEngine *mesh, Transform *anim,QOpenGLTexture *texture);
 
 
     void initMonde();
@@ -110,7 +111,7 @@ private:
     QOpenGLShaderProgram program;
     GeometryEngine *geometries;
     GameObject *gameObj;
-    MobileObj *mobileobj;
+  //  MobileObj *mobileobj;
     QOpenGLTexture *texture;
 
     QOpenGLTexture * textureGrass;

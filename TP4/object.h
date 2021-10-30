@@ -20,14 +20,25 @@ protected:
     Transform animation = Transform();
     QOpenGLTexture *texture;
     bool ifTexture =false;
-  //  QVector< Object*> enfants= QVector<Object*>();
-  //  Object *parent;
+    QVector< Object*> enfants= QVector<Object*>();
+    Object *parent;
 
     ///Constructeur
 public:
-    Object():t(Transform()){}
-    Object(Transform tt):t(tt){}
+    Object():t(Transform()),parent(nullptr){}
+    Object(Transform tt):t(tt),parent(nullptr){}
     Object(Transform tt,Transform anim):t(tt),animation(anim){}
+    Object(Transform tt, Object par):t(tt){
+        parent = &par;
+    }
+    Object(Transform tt, Object par, QVector<Object*> enf)
+        :t(tt),enfants(enf){
+        parent = &par;
+    }
+    Object( Object par, QVector<Object*> enf)
+        :t(Transform()),enfants(enf){
+        parent = &par;
+    }
 
    ///Getter/Setter
     void updateMesh(GeometryEngine *ge){
@@ -41,7 +52,14 @@ public:
         else{
             ifTexture =false;
         }}
+    void addChild(Object * enfant){
+        enfants.append(enfant);
+        enfant->SetParent(this);
+    }
 
+    void SetParent(Object * pa){
+        parent = pa;
+    }
  ///Methode
 protected:
     void chargerTextureForShader(QOpenGLShaderProgram * program){
@@ -61,7 +79,7 @@ protected:
              a = t.doTransformation();
         return a;
 }
-    QMatrix4x4 ApplyMatriceForShader(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 m){
+    virtual QMatrix4x4 ApplyMatriceForShader(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 m){
 
         QMatrix4x4 anim= calculMatrice(program,  deltaTime);
 
@@ -70,7 +88,7 @@ protected:
     }
 
 
-    QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime){
+    virtual QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime){
 
         QMatrix4x4 a =  calculMatrice(program,  deltaTime);
 
@@ -78,7 +96,7 @@ protected:
         return a;
     }
 
-    QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 m){
+    virtual QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 m){
 
         QMatrix4x4 anim= calculMatrice(program,  deltaTime);
 
@@ -86,14 +104,8 @@ protected:
         return m*anim;
     }
 
-
-    void  updateScene(QOpenGLShaderProgram * program){
-        chargerTextureForShader(program);
-        geo->drawCubeGeometry(program);
-        //foreach (GameObject* go, enfants) {
-            //   qDebug("foreach %i \n",enfants.size());
-      //      go->updateScene(program,deltaTime, m);
-    }
+public:
+    virtual void  updateScene(QOpenGLShaderProgram * program, double deltaTime =1, QMatrix4x4 m= QMatrix4x4());
 
 
 

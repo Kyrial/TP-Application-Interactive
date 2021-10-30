@@ -4,6 +4,7 @@ TARGET = gameengine
 TEMPLATE = app
 
 SOURCES += main.cpp \
+    cameraobject.cpp \
     gameobject.cpp \
     mobileobj.cpp \
     object.cpp \
@@ -15,6 +16,7 @@ SOURCES += \
 
 HEADERS += \
     BasicIO.h \
+    cameraobject.h \
     gameobject.h \
     mainwidget.h \
     geometryengine.h \

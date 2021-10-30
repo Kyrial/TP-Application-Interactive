@@ -81,21 +81,21 @@ void MainWidget::initMonde(){
     gameObj = new GameObject();// tt, geo);
 }
 
-GameObject* MainWidget::addGameObject(GameObject *parent, Transform *t, GeometryEngine *mesh=new GeometryEngine(), Transform *anim = new Transform(),QOpenGLTexture *texture=NULL){
+Object* MainWidget::addGameObject(Object *parent, Transform *t, GeometryEngine *mesh=new GeometryEngine(), Transform *anim = new Transform(),QOpenGLTexture *texture=NULL){
     //setTexture(QOpenGLTexture *txtr)
-    GameObject *gameObj2 = new GameObject(*t, *anim);
+    Object *gameObj2 = new GameObject(*t, *anim);
     gameObj2->updateMesh(mesh);
     gameObj2->setTexture(texture);
     parent->addChild(gameObj2);
     return gameObj2;
 }
-MobileObj* MainWidget::addMobileObject(GameObject *parent, Transform *t, GeometryEngine *mesh=new GeometryEngine(), Transform *anim = new Transform(),QOpenGLTexture *texture=NULL){
+Object* MainWidget::addMobileObject(Object *parent, Transform *t, GeometryEngine *mesh=new GeometryEngine(), Transform *anim = new Transform(),QOpenGLTexture *texture=NULL){
     //setTexture(QOpenGLTexture *txtr)
     //MobileObj *Obj2
-    mobileobj= new MobileObj(*t, *anim);
+    Object *mobileobj= new MobileObj(*t, *anim);
     mobileobj->updateMesh(mesh);
     mobileobj->setTexture(texture);
-    //parent->addChild(gameObj2);
+    parent->addChild(mobileobj);
     return mobileobj;
 }
 
@@ -104,7 +104,7 @@ void MainWidget::scene(){
     //Instance INIT GAME OBJECT //NOEUD SOLEIL
     Transform *t_NSoleil = new Transform;
     t_NSoleil->setScale(0.8,0.8,0.8);
-    GameObject* noeudSoleil = addGameObject(gameObj,t_NSoleil);
+    Object* noeudSoleil = addGameObject(gameObj,t_NSoleil);
     //Fin creation
 
     //Instance INIT GAME OBJECT //soleil
@@ -123,18 +123,18 @@ void MainWidget::scene(){
     t_NTerre->setTranslate(11,0,0);
     Transform *anim_NTerre = new Transform;
     anim_NTerre->setRotation(0,0,0.2,1);
-    GameObject* noeudTerre = addGameObject(noeudSoleil,t_NTerre,new GeometryEngine, anim_NTerre);
+    Object* noeudTerre = addGameObject(noeudSoleil,t_NTerre,new GeometryEngine, anim_NTerre);
     //Fin creation
 
     //Instance INIT GAME OBJECT //Terre
     GeometryEngine *geo_Terre = new GeometryEngine;
-   // geo_Terre->initPlanegeometry();
-    geo_Terre->initMesh(":/sphere.off");
+    geo_Terre->initPlanegeometry();
+   // geo_Terre->initMesh(":/sphere.off");
     Transform *t_Terre = new Transform;
     t_Terre->setRotation(-1,0,0,23.44);
     Transform *anim_Terre = new Transform;
     anim_Terre->setRotation(0,0,1,1);
-    addGameObject(noeudTerre,t_Terre , geo_Terre,anim_Terre);
+    Object* Terre = addGameObject(noeudTerre,t_Terre , geo_Terre,anim_Terre);
     //Fin creation
 
     //Instance INIT GAME OBJECT // NOEUD LUNE
@@ -143,7 +143,7 @@ void MainWidget::scene(){
     t_NLune->setTranslate(15,0,0);
     Transform *anim_NLune = new Transform;
     anim_NLune->setRotation(0,0,-5,5);
-    GameObject* noeudLune = addGameObject(noeudTerre,t_NLune,new GeometryEngine, anim_NLune);
+    Object* noeudLune = addGameObject(noeudTerre,t_NLune,new GeometryEngine, anim_NLune);
     //Fin creation
 
     //Instance INIT GAME OBJECT //lune
@@ -170,7 +170,8 @@ void MainWidget::scene(){
     addMobileObject(noeudTerre,t_mobile , geo_mobile, anim_mobile/*,new QOpenGLTexture(QImage(":/textureSoleil.png").mirrored())*/);
     //Fin creation
 
-
+    Object *cameraObj= new CameraObject();
+    noeudTerre->addChild(cameraObj);
     ///
 
 
@@ -378,7 +379,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 0.1, zFar = 80.0, fov = 45.0;
+    const qreal zNear = 0.2, zFar = 80.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -403,7 +404,7 @@ void MainWidget::paintGL()
     //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(0.0, 0.0, 1.2);
     matrix.rotate(rotation);
 
 
@@ -414,7 +415,7 @@ void MainWidget::paintGL()
 
 
     // Set modelview-projection matrix
-    program.setUniformValue("mvp_matrix",  projection *  matrix * view);
+    program.setUniformValue("mvp_matrix",  projection *  matrix /** view*/);
     // program.setUniformValue("mvp_matrix",  matrix * view * projection);
     //! [6]
 
@@ -428,9 +429,7 @@ void MainWidget::paintGL()
     // geometries->drawCubeGeometry(&program);
 
     //##############
-    // gameObj->chargeMatriceForShader(&program);
 
-    // gameObj->geo.drawCubeGeometry(&program);
 
 
 
@@ -439,7 +438,7 @@ void MainWidget::paintGL()
     qDebug("deltaTime: %f", deltaTime);
     gameObj->updateScene(&program, deltaTime);
     //TODO
-    mobileobj->updateScene(&program,deltaTime);
+ //   mobileobj->updateScene(&program,deltaTime);
     lastFrame.start();
     //geometries->drawCubeGeometry(&program);
 }

@@ -15,23 +15,22 @@ class GameObject : public Object
 {
     ///ATTRIBUT
 private:
-    QVector< GameObject*> enfants= QVector<GameObject*>();
-    GameObject *parent;
-
+   // QVector< GameObject*> enfants= QVector<GameObject*>();
+  //  GameObject *parent;
+    int i=1;
 
     ///Constructeur
 public:
-    GameObject():Object(),parent(nullptr){}
-    GameObject(Transform tt, GameObject par):Object(tt){
-        parent = &par;
+    GameObject():Object(){}
+    GameObject(Transform tt, GameObject par):Object(tt,par){
     }
 
     GameObject(Transform tt):Object(tt){}
     GameObject(Transform tt,Transform anim):Object(tt,anim){}
 
-    GameObject(Transform tt, GameObject par, QVector<GameObject*> enf)
-        :Object(tt),enfants(enf){
-        parent = &par;
+    GameObject(Transform tt, Object par, QVector<Object*> enf)
+        :Object(tt,par,enf){
+
     }
 
 
@@ -39,40 +38,22 @@ public:
 
 public:
 ///Getter/Setter
-    void addChild(GameObject * enfant){
+ /*   void addChild(GameObject * enfant){
         enfants.append(enfant);
         enfant->SetParent(this);
     }
 
     void SetParent(GameObject * pa){
         parent = pa;
-    }
+    }*/
 
 
 
     ///Methode
 
 
-    void  updateScene(QOpenGLShaderProgram * program, double deltaTime){
-        QMatrix4x4 m= chargeMatriceForShader(program, deltaTime);
-
-        Object::updateScene(program);
-
-        foreach (GameObject* go, enfants) {
-            //   qDebug("foreach %i \n",enfants.size());
-            go->updateScene(program,deltaTime, m);
-        }
-    }
-    void  updateScene(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 lastM){
-        QMatrix4x4 m= chargeMatriceForShader(program, deltaTime,lastM);
-
-        Object::updateScene(program);
-        //     qDebug("boucle ");
-        foreach (GameObject* go, enfants) {
-            //  qDebug("foreach %i \n",enfants.size());
-            go->updateScene(program,deltaTime, m);
-        }
-    }
+    void   updateScene(QOpenGLShaderProgram * program, double deltaTime);
+    void  updateScene(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 lastM) override;
 
 
 };

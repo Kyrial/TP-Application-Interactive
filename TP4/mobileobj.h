@@ -38,8 +38,16 @@ public:
             addGravite( deltaTime);
         QMatrix4x4 m= chargeMatriceForShader(program, deltaTime);
 
-        Object::updateScene(program);
-        //  qDebug("boucle ");
+         Object::updateScene(program, deltaTime, m);
+
+    }
+    void  updateScene(QOpenGLShaderProgram * program, double deltaTime,QMatrix4x4 lastM){
+        if(animate)
+            addGravite( deltaTime);
+        QMatrix4x4 m= chargeMatriceForShader(program, deltaTime,lastM);
+
+         Object::updateScene(program, deltaTime, m);
+
     }
 
 };
