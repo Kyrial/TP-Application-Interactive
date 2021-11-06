@@ -102,25 +102,25 @@ Object* MainWidget::addMobileObject(Object *parent, Transform *t, GeometryEngine
 
 void MainWidget::scene(){
     //Instance INIT GAME OBJECT //NOEUD SOLEIL
-    Transform *t_NSoleil = new Transform;
-    t_NSoleil->setScale(0.8,0.8,0.8);
-    Object* noeudSoleil = addGameObject(gameObj,t_NSoleil);
+    Object* noeudSoleil = addGameObject(gameObj,new Transform);
     //Fin creation
 
     //Instance INIT GAME OBJECT //soleil
     GeometryEngine *geo_Soleil = new GeometryEngine;
     //geo_Soleil->initCubeGeometry();
+    Transform *t_Soleil = new Transform;
+    t_Soleil->setScale(5,5,5);
     geo_Soleil->initMesh(":/sphere.off");
     Transform *anim_Soleil = new Transform;
     anim_Soleil->setRotation(0,0,-0.5,1);
-    addGameObject(noeudSoleil,new Transform , geo_Soleil, anim_Soleil,new QOpenGLTexture(QImage(":/textureSoleil.png").mirrored()));
+    addGameObject(noeudSoleil,t_Soleil, geo_Soleil, anim_Soleil,new QOpenGLTexture(QImage(":/textureSoleil.png").mirrored()));
     //Fin creation
 
 
     //Instance INIT GAME OBJECT // NOEUD TERRE
     Transform *t_NTerre = new Transform;
-    t_NTerre->setScale(0.3,0.3,0.3);
-    t_NTerre->setTranslate(11,0,0);
+    t_NTerre->setScale(1,1,1);
+    t_NTerre->setTranslate(20,0,0);
     Transform *anim_NTerre = new Transform;
     anim_NTerre->setRotation(0,0,0.2,1);
     Object* noeudTerre = addGameObject(noeudSoleil,t_NTerre,new GeometryEngine, anim_NTerre);
@@ -139,8 +139,8 @@ void MainWidget::scene(){
 
     //Instance INIT GAME OBJECT // NOEUD LUNE
     Transform *t_NLune = new Transform;
-    t_NLune->setScale(0.2,0.2,0.2);
-    t_NLune->setTranslate(15,0,0);
+    t_NLune->setScale(0.3,0.3,0.3);
+    t_NLune->setTranslate(16,0,0);
     Transform *anim_NLune = new Transform;
     anim_NLune->setRotation(0,0,-5,5);
     Object* noeudLune = addGameObject(noeudTerre,t_NLune,new GeometryEngine, anim_NLune);
@@ -154,7 +154,7 @@ void MainWidget::scene(){
     Transform *t_Lune = new Transform;
     t_Lune->setRotation(1,0,0,6.68);
     Transform *anim_Lune = new Transform;
-    anim_Lune->setRotation(0,0,1,1);
+    anim_Lune->setRotation(0,0,1,0.8);
     addGameObject(noeudLune,t_Lune , geo_Lune,anim_Lune);
     //Fin creation
     ////////////
@@ -164,14 +164,17 @@ void MainWidget::scene(){
     //geo_Soleil->initCubeGeometry();
     geo_mobile->initMesh(":/space_station.off");
     Transform *t_mobile = new Transform;
-    t_mobile->setScale(0.2,0.2,0.2);
+    t_mobile->setScale(0.02,0.02,0.02);
+    t_mobile->setTranslate(0,0,100);
     Transform *anim_mobile = new Transform;
     anim_mobile->setTranslate(1.5,0,1.5);
-    addMobileObject(noeudTerre,t_mobile , geo_mobile, anim_mobile/*,new QOpenGLTexture(QImage(":/textureSoleil.png").mirrored())*/);
+    addMobileObject(noeudTerre,t_mobile , geo_mobile, anim_mobile,
+                    new QOpenGLTexture(QImage(":/textureSoleil.png").mirrored())
+                    );
     //Fin creation
 
     Object *cameraObj= new CameraObject();
-    noeudTerre->addChild(cameraObj);
+    Terre->addChild(cameraObj);
     ///
 
 
@@ -404,7 +407,7 @@ void MainWidget::paintGL()
     //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, 1.2);
+    matrix.translate(0.0, 0.0, -2);
     matrix.rotate(rotation);
 
 

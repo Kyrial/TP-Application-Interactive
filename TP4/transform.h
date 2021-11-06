@@ -76,7 +76,25 @@ public:
         t = t*vit;
     }
 
+    //Extract is basically the last column of the matrix
+    static QVector3D extracteTranslate(QMatrix4x4 m){
+        return m.column(3).toVector3D();
+    }
+    static QVector3D extracteScale(QMatrix4x4 m){
+        return QVector3D(m.column(0).toVector3D().length(),m.column(1).toVector3D().length(),m.column(2).toVector3D().length());
+    }
 
+    static QMatrix4x4 extracteRotate(QMatrix4x4 m){
+       QVector3D vecScale = extracteScale( m);
+    QMatrix4x4 r = QMatrix4x4();
+
+    r.setColumn(0,m.column(0).toVector3D()/vecScale.x());
+    r.setColumn(1,m.column(1).toVector3D()/vecScale.x());
+    r.setColumn(2,m.column(2).toVector3D()/vecScale.x());
+r.setColumn(3,QVector4D(.0,.0,.0,1.0));
+    return r;
+   }
+//fromRotationMatrix
 
 
 

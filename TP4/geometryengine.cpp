@@ -292,7 +292,7 @@ void GeometryEngine::initPlanegeometry()
     VertexData vertices[x*y];
     unsigned int indexCount = x*y+y*(x-2)+2*(x-2)+2;
     GLushort indices[x*y+y*(x-2)+2*(x-2)+2];
-    subdivisePlan(x,  y,  vertices,  indices,-2,-2,2,2);
+    subdivisePlan(x,  y,  vertices,  indices,-4,-4,4,4);
 
    // qDebug("taille index %i",indexCount);
 //qDebug("taille index tab %i",x*y+y*(x-2)+2*(x-2)+2);
