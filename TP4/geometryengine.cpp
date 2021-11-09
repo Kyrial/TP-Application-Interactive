@@ -109,7 +109,10 @@ bool GeometryEngine::intersect(GeometryEngine *geo){
 }
 
 
-
+void GeometryEngine::updateBB(QMatrix4x4 m){
+    BBMin = m*Min;
+    BBMax = m*Max;
+}
 
 void GeometryEngine::ajustBB(GeometryEngine *geo){
     if(BBMin ==BBMax){
@@ -146,45 +149,49 @@ void GeometryEngine::setBBMax(QVector3D v){
 }
 
 void GeometryEngine::initBB(VertexData vertices[],int max){
-  BBMin= vertices[0].position;
-  BBMax= vertices[0].position;
+  Min= vertices[0].position;
+  Max= vertices[0].position;
 
    for(int i=0;i<max; i++){
-       if(vertices[i].position[0]< BBMin[0])
-          BBMin[0]= vertices[i].position[0];
-       if(vertices[i].position[1]< BBMin[1])
-          BBMin[1]= vertices[i].position[1];
-       if(vertices[i].position[2]< BBMin[2])
-          BBMin[2]= vertices[i].position[2];
+       if(vertices[i].position[0]< Min[0])
+          Min[0]= vertices[i].position[0];
+       if(vertices[i].position[1]< Min[1])
+          Min[1]= vertices[i].position[1];
+       if(vertices[i].position[2]< Min[2])
+          Min[2]= vertices[i].position[2];
 
-       if(vertices[i].position[0]> BBMax[0])
-          BBMax[0]= vertices[i].position[0];
-       if(vertices[i].position[1]> BBMax[1])
-          BBMax[1]= vertices[i].position[1];
-       if(vertices[i].position[2]> BBMax[2])
-          BBMax[2]= vertices[i].position[2];
+       if(vertices[i].position[0]> Max[0])
+          Max[0]= vertices[i].position[0];
+       if(vertices[i].position[1]> Max[1])
+          Max[1]= vertices[i].position[1];
+       if(vertices[i].position[2]> Max[2])
+          Max[2]= vertices[i].position[2];
    }
+   BBMin = Min;
+   BBMax = Max;
 }
 
 void GeometryEngine::initBB(std::vector<QVector3D> vertex){
-  BBMin= this->vertex[0];
-  BBMax= this->vertex[0];
+  Min= this->vertex[0];
+  Max= this->vertex[0];
 
    foreach(QVector3D val , vertex){
-       if(val[0]< BBMin[0])
-          BBMin[0]= val[0];
-       if(val[1]< BBMin[1])
-          BBMin[1]= val[1];
-       if(val[2]< BBMin[2])
-          BBMin[2]= val[2];
+       if(val[0]< Min[0])
+          Min[0]= val[0];
+       if(val[1]< Min[1])
+          Min[1]= val[1];
+       if(val[2]< Min[2])
+          Min[2]= val[2];
 
-       if(val[0]> BBMax[0])
-          BBMax[0]= val[0];
-       if(val[1]> BBMax[1])
-          BBMax[1]= val[1];
-       if(val[2]> BBMax[2])
-          BBMax[2]= val[2];
+       if(val[0]> Max[0])
+          Max[0]= val[0];
+       if(val[1]> Max[1])
+          Max[1]= val[1];
+       if(val[2]> Max[2])
+          Max[2]= val[2];
    }
+   BBMin = Min;
+   BBMax = Max;
 }
 
 

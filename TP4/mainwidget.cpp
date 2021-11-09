@@ -87,6 +87,7 @@ Object* MainWidget::addGameObject(Object *parent, Transform *t, GeometryEngine *
     gameObj2->updateMesh(mesh);
     gameObj2->setTexture(texture);
     parent->addChild(gameObj2);
+    gameObj2->Monde = gameObj;
     return gameObj2;
 }
 Object* MainWidget::addMobileObject(Object *parent, Transform *t, GeometryEngine *mesh=new GeometryEngine(), Transform *anim = new Transform(),QOpenGLTexture *texture=NULL){
@@ -96,6 +97,7 @@ Object* MainWidget::addMobileObject(Object *parent, Transform *t, GeometryEngine
     mobileobj->updateMesh(mesh);
     mobileobj->setTexture(texture);
     parent->addChild(mobileobj);
+    mobileobj->Monde = gameObj;
     return mobileobj;
 }
 
@@ -103,6 +105,7 @@ Object* MainWidget::addMobileObject(Object *parent, Transform *t, GeometryEngine
 void MainWidget::scene(){
     //Instance INIT GAME OBJECT //NOEUD SOLEIL
     Object* noeudSoleil = addGameObject(gameObj,new Transform);
+   // noeudSoleil->Monde = noeudSoleil;
     //noeudSoleil->setMonde();
     //Fin creation
 
@@ -440,9 +443,10 @@ void MainWidget::paintGL()
 //    deltaTime =0.99;// lastFrame.elapsed();
     deltaTime = lastFrame.elapsed();
     qDebug("deltaTime: %f", deltaTime);
-    gameObj->updateScene(&program, deltaTime);
 
+    gameObj->updateScene(&program, deltaTime);
     gameObj->updateBB();
+
 
 
 

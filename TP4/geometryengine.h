@@ -91,13 +91,19 @@ private:
     void subdivisePlan(int x, int y,  VertexData vertices[], GLushort indices[],float Xmin,float Ymin,float Xmax,float Ymax);//,std::string nameWeightMap );
 
 std::vector<QVector3D> getVertex();
-    QVector3D BBMin = QVector3D();
-    QVector3D BBMax = QVector3D();
+    QVector3D BBMin = QVector3D(0,0,0);
+    QVector3D BBMax = QVector3D(0,0,0);
+
+    QVector3D Min = QVector3D(0,0,0);
+    QVector3D Max = QVector3D(0,0,0);
+
     void initBB(std::vector<QVector3D> vertex);
     void initBB(VertexData vertices[], int i);
     void setBBMin(QVector3D v);
     void setBBMax(QVector3D v);
 public:
+
+    void updateBB(QMatrix4x4 m);
     void ajustBB(GeometryEngine *geo);
 bool intersect(GeometryEngine *geo);
 QVector3D gestionCollision(GeometryEngine *geo,QVector3D vec);

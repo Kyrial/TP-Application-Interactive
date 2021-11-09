@@ -15,7 +15,7 @@ class Object
 public:
     GeometryEngine *geo = new GeometryEngine();
     static bool  animate;
-    static Object *Monde;
+    Object *Monde;
 protected:
     Transform t = Transform();
     Transform animation = Transform();
@@ -112,9 +112,7 @@ public:
     void findCollision( Object *obj,QMatrix4x4 anim);
     void updateBB();
 
-    static void setMonde(Object *o);
-
-
+    Object* getRacine();
 };
 
 

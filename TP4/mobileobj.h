@@ -32,18 +32,27 @@ public:
 
     }
 
+    void testCollision(){
+       QMatrix4x4 anim = animation.doTransformation();
+        Monde->findCollision(this,anim);
+    }
+
 
     void  updateScene(QOpenGLShaderProgram * program, double deltaTime){
-        if(animate)
+        if(animate){
             addGravite( deltaTime);
+            testCollision();
+        }
         QMatrix4x4 m= chargeMatriceForShader(program, deltaTime);
 
          Object::updateScene(program, deltaTime, m);
 
     }
     void  updateScene(QOpenGLShaderProgram * program, double deltaTime,QMatrix4x4 lastM){
-        if(animate)
+        if(animate){
             addGravite( deltaTime);
+            testCollision();
+        }
         QMatrix4x4 m= chargeMatriceForShader(program, deltaTime,lastM);
 
          Object::updateScene(program, deltaTime, m);
