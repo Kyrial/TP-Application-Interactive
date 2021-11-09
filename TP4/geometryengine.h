@@ -97,10 +97,10 @@ std::vector<QVector3D> getVertex();
     void initBB(VertexData vertices[], int i);
     void setBBMin(QVector3D v);
     void setBBMax(QVector3D v);
-    void ajustBB(GeometryEngine *geo);
 public:
+    void ajustBB(GeometryEngine *geo);
 bool intersect(GeometryEngine *geo);
-QVector3D gestionCollision(GeometryEngine *geo);
+QVector3D gestionCollision(GeometryEngine *geo,QVector3D vec);
 };
 
 #endif // GEOMETRYENGINE_H

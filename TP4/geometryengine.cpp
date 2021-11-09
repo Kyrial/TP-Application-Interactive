@@ -87,11 +87,15 @@ std::vector<QVector3D> GeometryEngine::getVertex(){
 }
 
 //geo en déplacement
-QVector3D GeometryEngine::gestionCollision(GeometryEngine *geoB){
+QVector3D GeometryEngine::gestionCollision(GeometryEngine *geoB, QVector3D vec){
     QVector3D milieuA = BBMax - BBMin;
     QVector3D milieuB = geoB->BBMax - geoB->BBMin;
-    //V = V - 2(V.N)*N
+
     QVector3D vecAB = milieuB -milieuA;
+
+    //V = V - 2(V.N)*N
+
+    return vec - 2* QVector3D::dotProduct(vecAB,vec) * vec;
 
 }
 

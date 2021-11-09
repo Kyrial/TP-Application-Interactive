@@ -441,6 +441,11 @@ void MainWidget::paintGL()
     deltaTime = lastFrame.elapsed();
     qDebug("deltaTime: %f", deltaTime);
     gameObj->updateScene(&program, deltaTime);
+
+    gameObj->updateBB();
+
+
+
     //TODO
  //   mobileobj->updateScene(&program,deltaTime);
     lastFrame.start();

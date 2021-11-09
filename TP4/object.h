@@ -109,9 +109,10 @@ protected:
 
 public:
     virtual void  updateScene(QOpenGLShaderProgram * program, double deltaTime =1, QMatrix4x4 m= QMatrix4x4());
+    void findCollision( Object *obj,QMatrix4x4 anim);
+    void updateBB();
 
-
-    void findCollision(QOpenGLShaderProgram * program, Object *obj);
+    static void setMonde(Object *o);
 
 
 };
