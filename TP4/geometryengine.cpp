@@ -80,11 +80,66 @@ GeometryEngine::~GeometryEngine()
 }
 //! [0]
 
+
+
 std::vector<QVector3D> GeometryEngine::getVertex(){
     return vertex;
 }
 
+//geo en déplacement
+QVector3D GeometryEngine::gestionCollision(GeometryEngine *geoB){
+    QVector3D milieuA = BBMax - BBMin;
+    QVector3D milieuB = geoB->BBMax - geoB->BBMin;
+    //V = V - 2(V.N)*N
+    QVector3D vecAB = milieuB -milieuA;
 
+}
+
+
+
+
+bool GeometryEngine::intersect(GeometryEngine *geo){
+  return (geo->BBMin.x() <= BBMax.x() && geo->BBMax.x() >= BBMin.x()) &&
+         (geo->BBMin.y() <= BBMax.y() && geo->BBMax.y() >= BBMin.y()) &&
+         (geo->BBMin.z() <= BBMax.z() && geo->BBMax.z() >= BBMin.z());
+}
+
+
+
+
+void GeometryEngine::ajustBB(GeometryEngine *geo){
+    if(BBMin ==BBMax){
+        BBMin = geo->BBMin;
+        BBMax = geo->BBMax;
+    }
+    else{
+
+        if(geo->BBMin[0]< BBMin[0])
+           BBMin[0]= geo->BBMin[0];
+        if(geo->BBMin[1]< BBMin[1])
+           BBMin[1]= geo->BBMin[1];
+        if(geo->BBMin[2]< BBMin[2])
+           BBMin[2]= geo->BBMin[2];
+
+        if(geo->BBMax[0]> BBMax[0])
+           BBMax[0]= geo->BBMax[0];
+        if(geo->BBMax[1]> BBMax[1])
+           BBMax[1]= geo->BBMax[1];
+        if(geo->BBMax[2]> BBMax[2])
+           BBMax[2]= geo->BBMax[2];
+
+
+
+
+    }
+}
+
+void GeometryEngine::setBBMin(QVector3D v){
+        BBMin = v;
+}
+void GeometryEngine::setBBMax(QVector3D v){
+        BBMax = v;
+}
 
 void GeometryEngine::initBB(VertexData vertices[],int max){
   BBMin= vertices[0].position;

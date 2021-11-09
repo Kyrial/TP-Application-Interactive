@@ -15,6 +15,7 @@ class Object
 public:
     GeometryEngine *geo = new GeometryEngine();
     static bool  animate;
+    static Object *Monde;
 protected:
     Transform t = Transform();
     Transform animation = Transform();
@@ -22,6 +23,7 @@ protected:
     bool ifTexture =false;
     QVector< Object*> enfants= QVector<Object*>();
     Object *parent;
+
 
     ///Constructeur
 public:
@@ -60,6 +62,11 @@ public:
     void SetParent(Object * pa){
         parent = pa;
     }
+
+
+
+
+
  ///Methode
 protected:
     void chargerTextureForShader(QOpenGLShaderProgram * program){
@@ -80,9 +87,7 @@ protected:
         return a;
 }
     virtual QMatrix4x4 ApplyMatriceForShader(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 m){
-
         QMatrix4x4 anim= calculMatrice(program,  deltaTime);
-
         program->setUniformValue("transform_Matrix", m*anim);
         return m*anim;
     }
@@ -97,9 +102,7 @@ protected:
     }
 
     virtual QMatrix4x4 chargeMatriceForShader(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 m){
-
         QMatrix4x4 anim= calculMatrice(program,  deltaTime);
-
         program->setUniformValue("transform_Matrix", m*anim);
         return m*anim;
     }
@@ -107,6 +110,8 @@ protected:
 public:
     virtual void  updateScene(QOpenGLShaderProgram * program, double deltaTime =1, QMatrix4x4 m= QMatrix4x4());
 
+
+    void findCollision(QOpenGLShaderProgram * program, Object *obj);
 
 
 };

@@ -17,7 +17,7 @@ class GameObject : public Object
 private:
    // QVector< GameObject*> enfants= QVector<GameObject*>();
   //  GameObject *parent;
-    int i=1;
+
 
     ///Constructeur
 public:
@@ -30,7 +30,6 @@ public:
 
     GameObject(Transform tt, Object par, QVector<Object*> enf)
         :Object(tt,par,enf){
-
     }
 
 

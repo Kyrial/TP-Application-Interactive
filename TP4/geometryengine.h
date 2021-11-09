@@ -95,6 +95,12 @@ std::vector<QVector3D> getVertex();
     QVector3D BBMax = QVector3D();
     void initBB(std::vector<QVector3D> vertex);
     void initBB(VertexData vertices[], int i);
+    void setBBMin(QVector3D v);
+    void setBBMax(QVector3D v);
+    void ajustBB(GeometryEngine *geo);
+public:
+bool intersect(GeometryEngine *geo);
+QVector3D gestionCollision(GeometryEngine *geo);
 };
 
 #endif // GEOMETRYENGINE_H

@@ -36,3 +36,5 @@ void  GameObject::updateScene(QOpenGLShaderProgram * program, double deltaTime, 
  //       go->updateScene(program,deltaTime, m);
     }
 
+
+

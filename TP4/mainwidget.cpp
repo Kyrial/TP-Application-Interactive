@@ -103,6 +103,7 @@ Object* MainWidget::addMobileObject(Object *parent, Transform *t, GeometryEngine
 void MainWidget::scene(){
     //Instance INIT GAME OBJECT //NOEUD SOLEIL
     Object* noeudSoleil = addGameObject(gameObj,new Transform);
+    //noeudSoleil->setMonde();
     //Fin creation
 
     //Instance INIT GAME OBJECT //soleil

@@ -12,3 +12,13 @@ void  Object::updateScene(QOpenGLShaderProgram * program, double deltaTime, QMat
         go->updateScene(program,deltaTime, m);
     }
 }
+
+
+
+void Object::findCollision(QOpenGLShaderProgram * program, Object* obj){
+
+    foreach (Object* go, enfants){
+        if(go->geo->intersect(obj->geo))
+                  {}
+    }
+}
