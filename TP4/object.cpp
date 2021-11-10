@@ -6,13 +6,36 @@ bool Object::animate = false;
 //{
 //}
 void  Object::updateScene(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 m){
-    geo->updateBB(m);
+
     chargerTextureForShader(program);
     geo->drawCubeGeometry(program);
+    QVector3D newBBMin =QVector3D();
+    QVector3D newBBMax =QVector3D();
+    bool firstPassage = true;
     foreach (Object* go, enfants) {
         //  qDebug("foreach %i \n",enfants.size());
         go->updateScene(program,deltaTime, m);
+
+
+        if( firstPassage){
+            newBBMax = go->geo->BBMax;
+            newBBMin = go->geo->BBMin;
+          //  geo->remplaceBB(go->geo);
+            firstPassage = false;
+        }
+
+            newBBMin = GeometryEngine::calcBBMin(newBBMin,go->geo->BBMin);
+            newBBMax= GeometryEngine::calcBBMax(newBBMax,go->geo->BBMax);
+            //geo->ajustBB(go->geo);
+
     }
+    if(enfants.size()==0)
+        geo->updateBB(m);
+    else{
+        geo->remplaceBB(newBBMin,newBBMax);
+
+    }
+
 }
 
 Object* Object::getRacine(){

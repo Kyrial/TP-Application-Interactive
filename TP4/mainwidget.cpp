@@ -445,7 +445,7 @@ void MainWidget::paintGL()
     qDebug("deltaTime: %f", deltaTime);
 
     gameObj->updateScene(&program, deltaTime);
-    gameObj->updateBB();
+    //gameObj->updateBB();
 
 
 

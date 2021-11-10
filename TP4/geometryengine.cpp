@@ -114,31 +114,38 @@ void GeometryEngine::updateBB(QMatrix4x4 m){
     BBMax = m*Max;
 }
 
-void GeometryEngine::ajustBB(GeometryEngine *geo){
+
+void GeometryEngine::ajustBB(QVector3D min, QVector3D max){
     if(BBMin ==BBMax){
-        BBMin = geo->BBMin;
-        BBMax = geo->BBMax;
+        BBMin = min;
+        BBMax = max;
     }
     else{
-
-        if(geo->BBMin[0]< BBMin[0])
-           BBMin[0]= geo->BBMin[0];
-        if(geo->BBMin[1]< BBMin[1])
-           BBMin[1]= geo->BBMin[1];
-        if(geo->BBMin[2]< BBMin[2])
-           BBMin[2]= geo->BBMin[2];
-
-        if(geo->BBMax[0]> BBMax[0])
-           BBMax[0]= geo->BBMax[0];
-        if(geo->BBMax[1]> BBMax[1])
-           BBMax[1]= geo->BBMax[1];
-        if(geo->BBMax[2]> BBMax[2])
-           BBMax[2]= geo->BBMax[2];
-
-
-
-
+        BBMin = calcBBMin(BBMin, min);
+        BBMax = calcBBMax(BBMax, max);
     }
+}
+QVector3D GeometryEngine::calcBBMin(QVector3D last, QVector3D min){
+    if(min[0]< last[0])
+       last[0]= min[0];
+    if(min[1]< last[1])
+       last[1]= min[1];
+    if(min[2]< last[2])
+       last[2]= min[2];
+    return last;
+}
+QVector3D GeometryEngine::calcBBMax(QVector3D last, QVector3D max){
+    if(max[0]> last[0])
+       last[0]= max[0];
+    if(max[1]> last[1])
+       last[1]= max[1];
+    if(max[2]> last[2])
+       last[2]= max[2];
+    return last;
+}
+
+void GeometryEngine::ajustBB(GeometryEngine *geo){
+   ajustBB(geo->BBMin,geo->BBMax);
 }
 
 void GeometryEngine::setBBMin(QVector3D v){
@@ -146,6 +153,14 @@ void GeometryEngine::setBBMin(QVector3D v){
 }
 void GeometryEngine::setBBMax(QVector3D v){
         BBMax = v;
+}
+void GeometryEngine::remplaceBB(GeometryEngine* geo){
+    BBMin = geo->BBMin;
+    BBMax = geo->BBMax;
+}
+void GeometryEngine::remplaceBB(QVector3D m,QVector3D M){
+    BBMin = m;
+    BBMax = M;
 }
 
 void GeometryEngine::initBB(VertexData vertices[],int max){
