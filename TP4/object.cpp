@@ -55,7 +55,7 @@ void Object::findCollision( Object* obj, QMatrix4x4 anim){
             go->findCollision(obj, anim);
         }
     }
-    if(enfants.size()==0 && this->geo->intersect(obj->geo)){
+    if(enfants.size()==0 && this != obj &&this->geo->intersect(obj->geo)){
             qDebug("COOOOOOOOOLLLLLLLLLLLIIIIIIIIIIIIISSSSSSSIIIIIIIIIIIOOOOOOOOONNNNNNNNNN");
             QVector3D direction =Transform::extracteTranslate(anim);
             direction = this->geo->gestionCollision(obj->geo, direction);
