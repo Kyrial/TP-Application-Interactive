@@ -23,6 +23,9 @@ protected:
     bool ifTexture =false;
     QVector< Object*> enfants= QVector<Object*>();
     Object *parent;
+    QMatrix4x4 transf = QMatrix4x4();
+
+
 
 
     ///Constructeur
@@ -64,6 +67,12 @@ public:
     }
 
 
+    void setTransf(QMatrix4x4 m){
+        transf= m;
+    }
+    QMatrix4x4 getTransf(){
+       return transf;
+    }
 
 
 
@@ -109,7 +118,7 @@ protected:
 
 public:
     virtual void  updateScene(QOpenGLShaderProgram * program, double deltaTime =1, QMatrix4x4 m= QMatrix4x4());
-    void findCollision( Object *obj,QMatrix4x4 anim);
+    void findCollision( Object *obj,QMatrix4x4 anim,  QMatrix4x4 t);
     void updateBB();
 
     Object* getRacine();

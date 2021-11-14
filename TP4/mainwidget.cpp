@@ -135,9 +135,9 @@ void MainWidget::scene(){
     geo_Terre->initPlanegeometry();
    // geo_Terre->initMesh(":/sphere.off");
     Transform *t_Terre = new Transform;
-    t_Terre->setRotation(-1,0,0,23.44);
+    //t_Terre->setRotation(-1,0,0,23.44);
     Transform *anim_Terre = new Transform;
-    anim_Terre->setRotation(0,0,1,1);
+    //anim_Terre->setRotation(0,0,1,1);
     Object* Terre = addGameObject(noeudTerre,t_Terre , geo_Terre,anim_Terre);
     //Fin creation
 
@@ -169,10 +169,10 @@ void MainWidget::scene(){
     geo_mobile->initMesh(":/space_station.off");
     Transform *t_mobile = new Transform;
     t_mobile->setScale(0.02,0.02,0.02);
-    t_mobile->setTranslate(0,0,100);
+    t_mobile->setTranslate(0,0,80);
     Transform *anim_mobile = new Transform;
-    anim_mobile->setTranslate(1.5,0,1.5);
-    addMobileObject(noeudTerre,t_mobile , geo_mobile, anim_mobile,
+    anim_mobile->setTranslate(2.5,0,1.5);
+    addMobileObject(Terre,t_mobile , geo_mobile, anim_mobile,
                     new QOpenGLTexture(QImage(":/textureSoleil.png").mirrored())
                     );
     //Fin creation
@@ -386,7 +386,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 0.2, zFar = 80.0, fov = 45.0;
+    const qreal zNear = 0.05, zFar = 80.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();

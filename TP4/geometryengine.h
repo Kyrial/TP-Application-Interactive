@@ -54,11 +54,13 @@
 #include <QOpenGLFunctions_3_1>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
-
+#include <QtGui/QImage>
 #include <QVector2D>
 #include <QVector3D>
 
 #include "BasicIO.h"
+
+#include "transform.h"
 struct VertexData
 {
     QVector3D position;
@@ -87,7 +89,11 @@ public:
     bool triangle_strip = true;
     QVector3D BBMin = QVector3D(0,0,0);
     QVector3D BBMax = QVector3D(0,0,0);
+    QVector3D internBBMin = QVector3D(0,0,0);
+    QVector3D internBBMax = QVector3D(0,0,0);
+ bool heightMap = false;
 private:
+    QImage img;
     std::vector<QVector3D>  vertex;
     //void initPlanegeometry();
     void subdivisePlan(int x, int y,  VertexData vertices[], GLushort indices[],float Xmin,float Ymin,float Xmax,float Ymax);//,std::string nameWeightMap );
@@ -103,15 +109,23 @@ std::vector<QVector3D> getVertex();
     void setBBMin(QVector3D v);
     void setBBMax(QVector3D v);
 
+    float getHauteur(QVector2D coordText);
 public:
+
+    QVector3D findCoordmesh(GeometryEngine *geo, QMatrix4x4 objM,  QMatrix4x4 ourM);
+    QVector3D getNormal();
+    QVector3D recallageCollision(GeometryEngine *geoB);
+    void resetBB();
+    bool ifNoeudVide();
     void remplaceBB(GeometryEngine *geo);
     void remplaceBB(QVector3D m,QVector3D M);
     void updateBB(QMatrix4x4 m);
     void ajustBB(GeometryEngine *geo);
     void ajustBB(QVector3D min, QVector3D max);
-   static QVector3D  calcBBMin(QVector3D last, QVector3D min);
-       static QVector3D  calcBBMax(QVector3D last, QVector3D min);
+   static QVector3D  calcBBMin(QVector3D const & last, QVector3D const & min);
+       static QVector3D  calcBBMax(QVector3D const & last, QVector3D const & max);
 bool intersect(GeometryEngine *geo);
+bool internintersect(GeometryEngine *geo);
 QVector3D gestionCollision(GeometryEngine *geo,QVector3D vec);
 };
 

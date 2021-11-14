@@ -86,32 +86,83 @@ std::vector<QVector3D> GeometryEngine::getVertex(){
     return vertex;
 }
 
+
+//recallage lors collision
+QVector3D GeometryEngine::recallageCollision(GeometryEngine *geoB){
+    QVector3D milieuA = BBMin + (BBMax - BBMin)/2;
+    QVector3D milieuB = geoB->BBMin +(geoB->BBMax - geoB->BBMin)/2;
+
+    QVector3D vecAB = milieuB -milieuA;
+    return getNormal()*1.5;
+}
+
+
+
+
+QVector3D GeometryEngine::getNormal(){
+    QVector3D pt = QVector3D(BBMax[0],BBMin[1],BBMin[2]);
+    QVector3D val= QVector3D::normal(pt-BBMin, BBMax-BBMin);
+    return val;
+
+}
+
+
+
 //geo en déplacement
 QVector3D GeometryEngine::gestionCollision(GeometryEngine *geoB, QVector3D vec){
-    QVector3D milieuA = BBMax - BBMin;
-    QVector3D milieuB = geoB->BBMax - geoB->BBMin;
+    QVector3D milieuA = BBMin + (BBMax - BBMin)/2;
+    QVector3D milieuB = geoB->BBMin +(geoB->BBMax - geoB->BBMin)/2;
 
     QVector3D vecAB = milieuB -milieuA;
 
     //V = V - 2(V.N)*N
 
-    return vec - 2* QVector3D::dotProduct(vecAB,vec) * vec;
+  //  return vec - 2* QVector3D::dotProduct(vec, vecAB) * vecAB;
+    return vec - 2* QVector3D::dotProduct(vec, getNormal()) * getNormal();
 
 }
 
+bool GeometryEngine::ifNoeudVide(){
+    return Min == QVector3D(0,0,0) && Max == QVector3D(0,0,0);
+}
+void GeometryEngine::resetBB(){
+     BBMin = QVector3D(0,0,0);
+     BBMax = QVector3D(0,0,0);
+}
 
-
-
+bool GeometryEngine::internintersect(GeometryEngine *geo){
+  return (geo->BBMin.x() <= internBBMax.x() && geo->BBMax.x() >= internBBMin.x()) &&
+         (geo->BBMin.y() <= internBBMax.y() && geo->BBMax.y() >= internBBMin.y()) &&
+         (geo->BBMin.z() <= internBBMax.z() && geo->BBMax.z() >= internBBMin.z());
+}
 bool GeometryEngine::intersect(GeometryEngine *geo){
-  return (geo->BBMin.x() <= BBMax.x() && geo->BBMax.x() >= BBMin.x()) &&
+   bool result;
+ //  if (heightMap == false){
+   result = (geo->BBMin.x() <= BBMax.x() && geo->BBMax.x() >= BBMin.x()) &&
          (geo->BBMin.y() <= BBMax.y() && geo->BBMax.y() >= BBMin.y()) &&
          (geo->BBMin.z() <= BBMax.z() && geo->BBMax.z() >= BBMin.z());
+  // }
+ //  else{
+ //      result = (geo->BBMin.x() <= BBMax.x() && geo->BBMax.x() >= BBMin.x()) &&
+  //           (geo->BBMin.y() <= BBMax.y() && geo->BBMax.y() >= BBMin.y()); }
+
+
+
+  return result;
 }
 
 
+
+//matrice avec coefficiant négatif -> inverse le min et le max !
 void GeometryEngine::updateBB(QMatrix4x4 m){
-    BBMin = m*Min;
-    BBMax = m*Max;
+
+    QVector3D tempMin = calcBBMin( m*Min,m*Max);
+    QVector3D tempMax = calcBBMax( m*Min,m*Max);
+
+    BBMin = tempMin;
+    BBMax = tempMax;
+    internBBMin = tempMin;
+    internBBMax = tempMax;
 }
 
 
@@ -125,23 +176,25 @@ void GeometryEngine::ajustBB(QVector3D min, QVector3D max){
         BBMax = calcBBMax(BBMax, max);
     }
 }
-QVector3D GeometryEngine::calcBBMin(QVector3D last, QVector3D min){
+QVector3D GeometryEngine::calcBBMin(QVector3D const & last, QVector3D const & min){
+    QVector3D result = last;
     if(min[0]< last[0])
-       last[0]= min[0];
+       result[0]= min[0];
     if(min[1]< last[1])
-       last[1]= min[1];
+       result[1]= min[1];
     if(min[2]< last[2])
-       last[2]= min[2];
-    return last;
+       result[2]= min[2];
+    return result;
 }
-QVector3D GeometryEngine::calcBBMax(QVector3D last, QVector3D max){
+QVector3D GeometryEngine::calcBBMax(QVector3D const & last, QVector3D const & max){
+    QVector3D result = last;
     if(max[0]> last[0])
-       last[0]= max[0];
+       result[0]= max[0];
     if(max[1]> last[1])
-       last[1]= max[1];
+       result[1]= max[1];
     if(max[2]> last[2])
-       last[2]= max[2];
-    return last;
+       result[2]= max[2];
+    return result;
 }
 
 void GeometryEngine::ajustBB(GeometryEngine *geo){
@@ -208,6 +261,46 @@ void GeometryEngine::initBB(std::vector<QVector3D> vertex){
    BBMin = Min;
    BBMax = Max;
 }
+
+float GeometryEngine::getHauteur(QVector2D coordText){
+
+
+    int x = (coordText[0])*img.width();
+    int y = (coordText[1])*img.height();
+   // QImage im2g = QImage(QString(":/heightmap.png"));
+    QRgb rgb = img.pixel(x,y);
+//    float q = (qRed(img.pixel(y,x))/ 125.0-1.0)*0.7;
+    return (qRed(rgb)/ 255.0)*0.7;
+}
+
+QVector3D GeometryEngine::findCoordmesh(GeometryEngine *geo, QMatrix4x4 objM,  QMatrix4x4 ourM){
+    QMatrix4x4 invObjM = Transform::inverse(objM);
+    QMatrix4x4 invOurM = Transform::inverse(ourM);
+    QVector3D a = invObjM*geo->BBMin;
+ //   QVector3D b = invObjM*geo->BBMax;
+  //  QVector3D c = invOurM*BBMin;
+ //   QVector3D d = invOurM*BBMax;
+
+   // vertices[i*y+j]= {QVector3D(Xmin+intervalX*i, Ymin+intervalY*j,0.0f ), QVector2D((intervalX_Texture*i)/2, (intervalY_Texture*j)/2)};
+    float interval=(Max[0]-Min[0])/(float)(80-1);
+    //(val+min)/ interval = case
+    int caseX = (a.x()- Min[0])/interval;
+    int caseY = (a.y()- Min[1])/interval;
+
+    QVector3D k = vertex[caseX*80+caseY];
+
+    float interval_Texture=2/(float)(80-1);
+    QVector2D coordText = QVector2D((interval_Texture*caseX)/2, (interval_Texture*caseY)/2);
+    QVector3D newCoord = a;
+    float j = getHauteur( coordText);
+    newCoord[2]= j;
+    newCoord  = objM*newCoord;
+    QVector3D vecTranslate = newCoord - geo->BBMin;
+
+    int i=0;
+    return vecTranslate;
+}
+
 
 
 
@@ -328,7 +421,7 @@ void GeometryEngine::initCubeGeometry()
 
 void GeometryEngine::subdivisePlan(int x, int y, VertexData vertices[],GLushort indices[], float Xmin=-1,float Ymin=-1,float Xmax=1,float Ymax=1)//, std::string  nameWeightMap = "")
 {
-
+    vertex.resize(x*y);
     float intervalX_Texture=2/(float)(x-1);
     float intervalY_Texture=2/(float)(y-1);
 
@@ -339,7 +432,7 @@ void GeometryEngine::subdivisePlan(int x, int y, VertexData vertices[],GLushort 
          //   qDebug("%f %f",Xmin+intervalX*i, Ymin+intervalY*j);
           //  vertices[i*y+j]= {QVector3D(Xmin+intervalX*i, Ymin+intervalY*j, static_cast<float> (rand()) / static_cast<float> (RAND_MAX) ), QVector2D((intervalX_Texture*i)/2, (intervalY_Texture*j)/2)};
             vertices[i*y+j]= {QVector3D(Xmin+intervalX*i, Ymin+intervalY*j,0.0f ), QVector2D((intervalX_Texture*i)/2, (intervalY_Texture*j)/2)};
-
+            vertex[i*y+j] =QVector3D(Xmin+intervalX*i, Ymin+intervalY*j,0.0f );
        }
    }
    int count =0;
@@ -366,7 +459,8 @@ void GeometryEngine::subdivisePlan(int x, int y, VertexData vertices[],GLushort 
 
 void GeometryEngine::initPlanegeometry()
 {
-
+    img = QImage(":/heightmap-1024x1024.png");
+    heightMap = true;
     int x=80;
     int y=80;
     unsigned int vertexNumber = x*y ;
@@ -380,7 +474,10 @@ void GeometryEngine::initPlanegeometry()
 
 
     initBB(vertices, vertexNumber);
-
+    if(Min[2]==0 && Max[2]==0){
+        Max[2] = 0.3;
+        Min[2] = -2.0;
+      }
 //! [1]
     // Transfer vertex data to VBO 0
     arrayBuf.bind();

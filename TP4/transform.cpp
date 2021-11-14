@@ -3,7 +3,10 @@
 
 
 
-
+QMatrix4x4 Transform::inverse(QMatrix4x4 const m){
+    QMatrix4x4 inv = m;
+    return inv.inverted();
+}
 
 /*
 QVector3D Transform::applyToPoint(QVector3D p){

@@ -24,6 +24,7 @@ private:
 
 
 
+
 public:
    //constructeur
     Transform():s(QVector3D(1,1,1)),  r(QQuaternion()), t(QVector3D()){}
@@ -75,6 +76,9 @@ public:
     void setTranslate(float vit){
         t = t*vit;
     }
+    void addTranslate(QVector3D val){
+        t = t+val;
+    }
 
     //Extract is basically the last column of the matrix
     static QVector3D extracteTranslate(QMatrix4x4 m){
@@ -115,11 +119,11 @@ r.setColumn(3,QVector4D(.0,.0,.0,1.0));
        return result;
     }
 
-//    Transform inverse();
+
  //   Transform interpolate_with( Transform &t, QVector3D k);
 
    //interpolation
-    Transform mix_with(Transform b, float k){
+    Transform mix_with(Transform & b, float k){
        Transform result;
        result.s = this->s * k + b.s * (1-k);
       // result.r = this->r mix_with(b, k);
@@ -130,9 +134,9 @@ r.setColumn(3,QVector4D(.0,.0,.0,1.0));
 
 
 
-    QVector4D apply( QVector4D p);
+   // QVector4D apply( QVector4D p);
 
-
+    static QMatrix4x4 inverse(QMatrix4x4 const m);
 
 protected:
 

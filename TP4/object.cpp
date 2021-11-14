@@ -6,7 +6,7 @@ bool Object::animate = false;
 //{
 //}
 void  Object::updateScene(QOpenGLShaderProgram * program, double deltaTime, QMatrix4x4 m){
-
+    setTransf(m);
     chargerTextureForShader(program);
     geo->drawCubeGeometry(program);
     QVector3D newBBMin =QVector3D();
@@ -32,7 +32,15 @@ void  Object::updateScene(QOpenGLShaderProgram * program, double deltaTime, QMat
     if(enfants.size()==0)
         geo->updateBB(m);
     else{
-        geo->remplaceBB(newBBMin,newBBMax);
+        if(geo->ifNoeudVide())
+            geo->remplaceBB(newBBMin,newBBMax);
+        else
+        {
+            geo->resetBB();
+            geo->updateBB(m);
+            geo->ajustBB(newBBMin,newBBMax);
+
+        }
 
     }
 
@@ -47,20 +55,32 @@ Object* Object::getRacine(){
 
 
 
-void Object::findCollision( Object* obj, QMatrix4x4 anim){
+void Object::findCollision( Object* obj, QMatrix4x4 anim, QMatrix4x4 t){
    // QMatrix4x4 m= chargeMatriceForShader(program, deltaTime,lastM);
 
     foreach (Object* go, enfants){
         if(go->geo->intersect(obj->geo)){
-            go->findCollision(obj, anim);
+            go->findCollision(obj, anim, t);
         }
     }
-    if(enfants.size()==0 && this != obj &&this->geo->intersect(obj->geo)){
+    if(!geo->ifNoeudVide() && this != obj &&this->geo->internintersect(obj->geo)){
             qDebug("COOOOOOOOOLLLLLLLLLLLIIIIIIIIIIIIISSSSSSSIIIIIIIIIIIOOOOOOOOONNNNNNNNNN");
-            QVector3D direction =Transform::extracteTranslate(anim);
-            direction = this->geo->gestionCollision(obj->geo, direction);
-            obj->animation.setTranslate(direction);
-          //  gestionCollision();
+            if(geo->heightMap){
+                QVector3D hauteur = geo->findCoordmesh( obj->geo,  t, this->getTransf());
+                obj->t.addTranslate(hauteur);
+                QVector3D direction =Transform::extracteTranslate(anim);
+                direction = this->geo->gestionCollision(obj->geo, direction);
+                obj->animation.setTranslate(direction);
+
+
+            }
+            else{
+                QVector3D direction =Transform::extracteTranslate(anim);
+                direction = this->geo->gestionCollision(obj->geo, direction);
+                obj->animation.setTranslate(direction);
+                //obj->animation.setTranslate(QVector3D(0,0,0));
+                obj->t.addTranslate(geo->recallageCollision(obj->geo));
+            }
 
 
     }
