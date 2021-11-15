@@ -81,8 +81,6 @@ public:
     QOpenGLBuffer indexBuf;
 
 
-
-
     void initCubeGeometry();
     void initPlanegeometry();
 
@@ -100,6 +98,8 @@ private:
 
 std::vector<QVector3D> getVertex();
 
+    int precisionX = 250;
+    int precisionY= 250;
 
     QVector3D Min = QVector3D(0,0,0);
     QVector3D Max = QVector3D(0,0,0);
@@ -112,7 +112,7 @@ std::vector<QVector3D> getVertex();
     float getHauteur(QVector2D coordText);
 public:
 
-    QVector3D findCoordmesh(GeometryEngine *geo, QMatrix4x4 objM,  QMatrix4x4 ourM);
+    QVector3D findCoordmesh(GeometryEngine *geo, QMatrix4x4 objM,  QMatrix4x4 ourM,  bool &collision);
     QVector3D getNormal();
     QVector3D recallageCollision(GeometryEngine *geoB);
     void resetBB();

@@ -74,7 +74,8 @@ public:
     }
 
     void setTranslate(float vit){
-        t = t*vit;
+        t[0] = t[0]*vit;
+        t[1] = t[1]*vit;
     }
     void addTranslate(QVector3D val){
         t = t+val;
@@ -132,6 +133,22 @@ r.setColumn(3,QVector4D(.0,.0,.0,1.0));
        return result;
     }
 
+
+
+
+
+
+
+    void convergeZero(){
+        if (abs(t[0]) < 0.001)
+            t[0]= 0;
+        if (abs(t[1]) < 0.001)
+            t[1]= 0;
+        if (abs(t[2]) < 0.001)
+            t[2]= 0;
+    }
+
+    static QVector3D convergeZero(QVector3D vec);
 
 
    // QVector4D apply( QVector4D p);

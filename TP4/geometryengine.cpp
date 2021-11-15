@@ -100,8 +100,18 @@ QVector3D GeometryEngine::recallageCollision(GeometryEngine *geoB){
 
 
 QVector3D GeometryEngine::getNormal(){
+    QVector3D val;
+    if(heightMap){
+         QVector3D pt1 = QVector3D(BBMin[0],BBMin[1],0);
+         QVector3D pt2 = QVector3D(BBMin[0],BBMax[1],0);
+         QVector3D pt3= QVector3D(BBMax[0],BBMax[1],0);
+         val= QVector3D::normal(pt2-pt1, pt3-pt1);
+    }
+
+    else{
     QVector3D pt = QVector3D(BBMax[0],BBMin[1],BBMin[2]);
-    QVector3D val= QVector3D::normal(pt-BBMin, BBMax-BBMin);
+    val= QVector3D::normal(pt-BBMin, BBMax-BBMin);
+    }
     return val;
 
 }
@@ -273,7 +283,7 @@ float GeometryEngine::getHauteur(QVector2D coordText){
     return (qRed(rgb)/ 255.0)*0.7;
 }
 
-QVector3D GeometryEngine::findCoordmesh(GeometryEngine *geo, QMatrix4x4 objM,  QMatrix4x4 ourM){
+QVector3D GeometryEngine::findCoordmesh(GeometryEngine *geo, QMatrix4x4 objM,  QMatrix4x4 ourM, bool &collision){
     QMatrix4x4 invObjM = Transform::inverse(objM);
     QMatrix4x4 invOurM = Transform::inverse(ourM);
     QVector3D a = invObjM*geo->BBMin;
@@ -282,20 +292,24 @@ QVector3D GeometryEngine::findCoordmesh(GeometryEngine *geo, QMatrix4x4 objM,  Q
  //   QVector3D d = invOurM*BBMax;
 
    // vertices[i*y+j]= {QVector3D(Xmin+intervalX*i, Ymin+intervalY*j,0.0f ), QVector2D((intervalX_Texture*i)/2, (intervalY_Texture*j)/2)};
-    float interval=(Max[0]-Min[0])/(float)(80-1);
+    float interval=(Max[0]-Min[0])/(float)(precisionX-1);
     //(val+min)/ interval = case
     int caseX = (a.x()- Min[0])/interval;
     int caseY = (a.y()- Min[1])/interval;
 
-    QVector3D k = vertex[caseX*80+caseY];
+    QVector3D k = vertex[caseX*precisionX+caseY];
 
-    float interval_Texture=2/(float)(80-1);
+    float interval_Texture=2/(float)(precisionX-1);
     QVector2D coordText = QVector2D((interval_Texture*caseX)/2, (interval_Texture*caseY)/2);
     QVector3D newCoord = a;
     float j = getHauteur( coordText);
+    QVector3D vecTranslate;
+    if(j < a[2])
+        collision  = false;
+
     newCoord[2]= j;
     newCoord  = objM*newCoord;
-    QVector3D vecTranslate = newCoord - geo->BBMin;
+    vecTranslate = newCoord - geo->BBMin;
 
     int i=0;
     return vecTranslate;
@@ -461,8 +475,8 @@ void GeometryEngine::initPlanegeometry()
 {
     img = QImage(":/heightmap-1024x1024.png");
     heightMap = true;
-    int x=80;
-    int y=80;
+    int x=precisionX;
+    int y=precisionY;
     unsigned int vertexNumber = x*y ;
     VertexData vertices[x*y];
     unsigned int indexCount = x*y+y*(x-2)+2*(x-2)+2;
@@ -475,8 +489,8 @@ void GeometryEngine::initPlanegeometry()
 
     initBB(vertices, vertexNumber);
     if(Min[2]==0 && Max[2]==0){
-        Max[2] = 0.3;
-        Min[2] = -2.0;
+        Max[2] = 1.5;
+        Min[2] = -3.0;
       }
 //! [1]
     // Transfer vertex data to VBO 0

@@ -20,5 +20,7 @@ void  CameraObject::updateScene(QOpenGLShaderProgram * program, double deltaTime
 
     // Set modelview-projection matrix
     program->setUniformValue("camera_matrix", view);
+
+    Object::updateScene(program, deltaTime, m);
 }
 

@@ -113,7 +113,7 @@ void MainWidget::scene(){
     GeometryEngine *geo_Soleil = new GeometryEngine;
     //geo_Soleil->initCubeGeometry();
     Transform *t_Soleil = new Transform;
-    t_Soleil->setScale(5,5,5);
+    t_Soleil->setScale(10,10,10);
     geo_Soleil->initMesh(":/sphere.off");
     Transform *anim_Soleil = new Transform;
     anim_Soleil->setRotation(0,0,-0.5,1);
@@ -123,10 +123,10 @@ void MainWidget::scene(){
 
     //Instance INIT GAME OBJECT // NOEUD TERRE
     Transform *t_NTerre = new Transform;
-    t_NTerre->setScale(1,1,1);
+    t_NTerre->setScale(2,2,2);
     t_NTerre->setTranslate(20,0,0);
     Transform *anim_NTerre = new Transform;
-    anim_NTerre->setRotation(0,0,0.2,1);
+    //anim_NTerre->setRotation(0,0,0.2,1);
     Object* noeudTerre = addGameObject(noeudSoleil,t_NTerre,new GeometryEngine, anim_NTerre);
     //Fin creation
 
@@ -169,16 +169,17 @@ void MainWidget::scene(){
     geo_mobile->initMesh(":/space_station.off");
     Transform *t_mobile = new Transform;
     t_mobile->setScale(0.02,0.02,0.02);
-    t_mobile->setTranslate(0,0,80);
+    t_mobile->setTranslate(80,0,25);
     Transform *anim_mobile = new Transform;
-    anim_mobile->setTranslate(2.5,0,1.5);
-    addMobileObject(Terre,t_mobile , geo_mobile, anim_mobile,
+    anim_mobile->setTranslate(-20,0,0);
+    Object* satellite =addMobileObject(Terre,t_mobile , geo_mobile, anim_mobile,
                     new QOpenGLTexture(QImage(":/textureSoleil.png").mirrored())
                     );
+
     //Fin creation
 
     Object *cameraObj= new CameraObject();
-    Terre->addChild(cameraObj);
+    satellite->addChild(cameraObj);
     ///
 
 
@@ -443,7 +444,7 @@ void MainWidget::paintGL()
 //    deltaTime =0.99;// lastFrame.elapsed();
     deltaTime = lastFrame.elapsed();
     qDebug("deltaTime: %f", deltaTime);
-
+     lastFrame.start();
     gameObj->updateScene(&program, deltaTime);
     //gameObj->updateBB();
 
@@ -452,7 +453,7 @@ void MainWidget::paintGL()
 
     //TODO
  //   mobileobj->updateScene(&program,deltaTime);
-    lastFrame.start();
+    //lastFrame.start();
     //geometries->drawCubeGeometry(&program);
 }
 
